@@ -25,10 +25,23 @@ namespace Дипломная_работа___Гимаев_Амир
     {
         public MainWindow()
         {
-            InitializeComponent();
+            ProgrammSetting.mainWindow = this;
+            ProgrammSetting.ReadSettingFileAndSettingProgramm();
 
+            InitializeComponent();
+            
             CropRectangleClass.mainWindow = this;
             CropRectangleClass.InitializationCropRectangleClass();
+
+            // Добавление обработчика события, который выделяет весь список при нажатии клавишь Ctrl + A
+            ListOfPhotos.InputBindings.Add(new KeyBinding(ApplicationCommands.SelectAll,
+                          new KeyGesture(Key.A, ModifierKeys.Control)));
+            ListOfPhotos.CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, (_sender, _e) =>
+            {
+                ListOfPhotos.SelectAll();
+            }));
+
+            DataContext = ProgrammSetting.MainWindowsStyleSetting.Font;
         }
 
 
@@ -117,13 +130,6 @@ namespace Дипломная_работа___Гимаев_Амир
 
 
 
-        private void WebcamViewer_MouseLeave(object sender, MouseEventArgs e)
-        {
-            
-        }
-
-
-
 
 
         private void StopChangeSizeAndDragCropRectangle(object sender, MouseButtonEventArgs e)
@@ -134,5 +140,8 @@ namespace Дипломная_работа___Гимаев_Амир
         {
              CropRectangleClass.RemoveAllCanvasMouseEventArgs();
         }
+
+        private void SettingButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e) 
+            => SettingPage.IsOpen = true;
     }
 }

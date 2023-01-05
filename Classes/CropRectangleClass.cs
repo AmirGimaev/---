@@ -24,7 +24,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         public static void InitializationCropRectangleClass()
         {
-            canvas = (mainWindow.Content as Grid).FindName("MovingSpaceCanvas") as Canvas;
+            canvas = mainWindow.MovingSpaceCanvas;
             cropRect = canvas.Children[1] as Grid;
 
             canvas.MouseMove += CheckCropRectangleSize; // благодаря этому CropRectangle не будет выходит за рамки MovingSpaceCanvas
@@ -296,7 +296,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         }
 
 
-
+        // !!!!!!!!!!!!!!! надо завершить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         public static void CropRectangleAdaptSize(object sender, SizeChangedEventArgs e)
         {
             Vector difference = (Point)e.NewSize - (Point)e.PreviousSize;

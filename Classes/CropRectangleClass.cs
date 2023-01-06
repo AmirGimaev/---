@@ -1,313 +1,317 @@
-﻿using ControlzEx.Standard;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Дипломная_работа___Гимаев_Амир.Classes
 {
-    static internal class CropRectangleClass
+    static internal class ScanAreaClass
     {
-        public static MainWindow mainWindow;
+        public static MainWindow MainWindowInstance;
 
         private static Canvas canvas;
 
-        private static Grid cropRect;
+        private static Grid scanArea;
 
         private static Point oldPos, newPos; // Данные переменные хранят старые и новые координаты мыши в относительно элемента MovingSpace_Canvas
-        private static double old_width, old_height; // Данные переменные хранят старые значения ширины и высоты элемента CropRectangle
 
-        private static Vector _movePoint; // Здесь хранится позиция мыщи относительно элемента CropRectangle
+        private static double old_width, old_height; // Данные переменные хранят старые значения ширины и высоты элемента ScanArea
 
+        private static Vector _movePoint; // Здесь хранится позиция мыщи относительно элемента ScanArea
 
         private static Vector difference1, difference2;
 
 
-        public static void InitializationCropRectangleClass()
-        {
-            canvas = mainWindow.MovingSpaceCanvas;
-            cropRect = canvas.Children[1] as Grid;
 
-            canvas.MouseMove += CheckCropRectangleSize; // благодаря этому CropRectangle не будет выходит за рамки MovingSpaceCanvas
+        public static void InitializationScanAreaClass()
+        {
+            canvas = MainWindowInstance.MovingSpaceCanvas;
+            scanArea = canvas.Children[1] as Grid;
+
+            canvas.MouseMove += CheckScanAreaSize; // благодаря этому ScanArea не будет выходит за рамки MovingSpaceCanvas
         }
 
         private static void FindCoordinatesAndOldSize(MouseButtonEventArgs eventArgs)
         {
-            old_width = cropRect.Width; old_height = cropRect.Height;
+            old_width = scanArea.Width; old_height = scanArea.Height;
             oldPos = Mouse.GetPosition(canvas);
 
-            _movePoint = (Vector)eventArgs.GetPosition(cropRect);
-            cropRect.CaptureMouse();
+            _movePoint = (Vector)eventArgs.GetPosition(scanArea);
+            scanArea.CaptureMouse();
         }
 
         // RemoveAllCanvasMouseEventArgs используется для очищения всех обработчиков событий MouseMove
         public static void RemoveAllCanvasMouseEventArgs()
         {
-            canvas.MouseMove -= CropRectangleLeftTopChangeSize;
-            canvas.MouseMove -= CropRectangleLeftBottonChangeSize;
-            canvas.MouseMove -= CropRectangleRightTopChangeSize;
-            canvas.MouseMove -= CropRectangleRightBottonChangeSize;
+            canvas.MouseMove -= ScanAreaLeftTopChangeSize;
+            canvas.MouseMove -= ScanAreaLeftBottonChangeSize;
+            canvas.MouseMove -= ScanAreaRightTopChangeSize;
+            canvas.MouseMove -= ScanAreaRightBottonChangeSize;
 
-            canvas.MouseMove -= CropRectangleTopChangeSize;
-            canvas.MouseMove -= CropRectangleBottonChangeSize;
-            canvas.MouseMove -= CropRectangleLeftChangeSize;
-            canvas.MouseMove -= CropRectangleRightChangeSize;
+            canvas.MouseMove -= ScanAreaTopChangeSize;
+            canvas.MouseMove -= ScanAreaBottonChangeSize;
+            canvas.MouseMove -= ScanAreaLeftChangeSize;
+            canvas.MouseMove -= ScanAreaRightChangeSize;
 
-            canvas.MouseMove -= CropRectangleDragMode;
+            canvas.MouseMove -= ScanAreaDragMode;
 
-            cropRect.ReleaseMouseCapture();
+            scanArea.ReleaseMouseCapture();
 
-            mainWindow.Cursor = Cursors.Arrow;
+            MainWindowInstance.Cursor = Cursors.Arrow;
         }
 
         
 
-        private static void CheckCropRectangleSize(object sender, MouseEventArgs e) // Ограничение размера CropSize
+        private static void CheckScanAreaSize(object sender, MouseEventArgs e) // Ограничение размера CropSize
         {
-            difference1 = (Vector)cropRect.TranslatePoint(new Point(0, 0),canvas);
+            difference1 = (Vector)scanArea.TranslatePoint(new Point(0, 0),canvas);
             difference2 = new Vector (canvas.ActualWidth, canvas.ActualHeight) 
-                - (Vector)cropRect.TranslatePoint(new Point(cropRect.ActualWidth, cropRect.ActualHeight), canvas) ;
+                - (Vector)scanArea.TranslatePoint(new Point(scanArea.ActualWidth, scanArea.ActualHeight), canvas) ;
         }
 
 
 
-        // Следующие 16 методов реализуют функцию изменения размера CropRectangle
-        public static void CropRectangleLeftTopLBM(object sender, MouseButtonEventArgs eventArgs)
+        // Следующие 16 методов реализуют функцию изменения размера ScanArea
+        public static void ScanAreaLeftTopLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleLeftTopChangeSize;
+            canvas.MouseMove += ScanAreaLeftTopChangeSize;
         }
-        private static void CropRectangleLeftTopChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaLeftTopChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNWSE;
+                MainWindowInstance.Cursor = Cursors.SizeNWSE;
                 newPos = Mouse.GetPosition(canvas);
 
                 var p = e.GetPosition(canvas) - _movePoint;
 
                 if (old_width + (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X); }
+                { scanArea.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X); }
 
                 if (old_height + (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(cropRect, p.Y); }
+                { scanArea.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(scanArea, p.Y); }
                 return;
             }
         }
 
-        public static void CropRectangleRightTopLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaRightTopLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleRightTopChangeSize;
+            canvas.MouseMove += ScanAreaRightTopChangeSize;
         }
-        private static void CropRectangleRightTopChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaRightTopChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNWSE;
+                MainWindowInstance.Cursor = Cursors.SizeNWSE;
 
                 newPos = Mouse.GetPosition(canvas);
 
-                var p = e.GetPosition(canvas) - (_movePoint + new Vector(cropRect.ActualWidth, 0));
+                var p = e.GetPosition(canvas) - (_movePoint + new Vector(scanArea.ActualWidth, 0));
 
                 if (old_width - (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X + old_width); }
+                { scanArea.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X + old_width); }
 
                 if (old_height + (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(cropRect, p.Y); }
+                { scanArea.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(scanArea, p.Y); }
                 return;
             }
         }
 
-        public static void CropRectangleRightBottonLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaRightBottonLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleRightBottonChangeSize;
+            canvas.MouseMove += ScanAreaRightBottonChangeSize;
         }
-        private static void CropRectangleRightBottonChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaRightBottonChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNWSE;
+                MainWindowInstance.Cursor = Cursors.SizeNWSE;
                 newPos = Mouse.GetPosition(canvas);
 
-                var p = e.GetPosition(canvas) - (_movePoint + new Vector(cropRect.Width, cropRect.Height));
+                var p = e.GetPosition(canvas) - (_movePoint + new Vector(scanArea.Width, scanArea.Height));
 
                 if (old_width - (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X + old_width); }
+                { scanArea.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X + old_width); }
 
                 if (old_height - (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height - (oldPos.Y - newPos.Y); Canvas.SetTop(cropRect, p.Y + old_height); }
+                { scanArea.Height = old_height - (oldPos.Y - newPos.Y); Canvas.SetTop(scanArea, p.Y + old_height); }
                 return;
             }
         }
 
-        public static void CropRectangleLeftBottonLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaLeftBottonLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleLeftBottonChangeSize;
+            canvas.MouseMove += ScanAreaLeftBottonChangeSize;
         }
-        private static void CropRectangleLeftBottonChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaLeftBottonChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNWSE;
+                MainWindowInstance.Cursor = Cursors.SizeNWSE;
                 newPos = Mouse.GetPosition(canvas);
 
-                var p = e.GetPosition(canvas) - (_movePoint + new Vector(0, cropRect.Height));
+                var p = e.GetPosition(canvas) - (_movePoint + new Vector(0, scanArea.Height));
 
                 if (old_width + (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X); }
+                { scanArea.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X); }
 
                 if (old_height - (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height - (oldPos.Y - newPos.Y); Canvas.SetTop(cropRect, p.Y + old_height); }
+                { scanArea.Height = old_height - (oldPos.Y - newPos.Y); Canvas.SetTop(scanArea, p.Y + old_height); }
                 return;
             }
         }
 
 
 
-        public static void CropRectangleTopLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaTopLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleTopChangeSize;
+            canvas.MouseMove += ScanAreaTopChangeSize;
         }
-        private static void CropRectangleTopChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaTopChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNS;
+                MainWindowInstance.Cursor = Cursors.SizeNS;
                 newPos = Mouse.GetPosition(canvas);
 
                 var p = e.GetPosition(canvas) - _movePoint;
 
                 if (old_height + (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(cropRect, p.Y); }
+                { scanArea.Height = old_height + (oldPos.Y - newPos.Y); Canvas.SetTop(scanArea, p.Y); }
                 return;
             }
         }
 
-        public static void CropRectangleBottonLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaBottonLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleBottonChangeSize;
+            canvas.MouseMove += ScanAreaBottonChangeSize;
         }
-        private static void CropRectangleBottonChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaBottonChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeNS;
+                MainWindowInstance.Cursor = Cursors.SizeNS;
 
                 newPos = Mouse.GetPosition(canvas);
 
                 if (old_height - (oldPos.Y - newPos.Y) > 100)
-                { cropRect.Height = old_height - (oldPos.Y - newPos.Y); }
+                { scanArea.Height = old_height - (oldPos.Y - newPos.Y); }
                 return;
             }
         }
 
-        public static void CropRectangleRightLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaRightLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleRightChangeSize;
+            canvas.MouseMove += ScanAreaRightChangeSize;
         }
-        private static void CropRectangleRightChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaRightChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeWE;
+                MainWindowInstance.Cursor = Cursors.SizeWE;
 
                 newPos = Mouse.GetPosition(canvas);
 
-                var p = e.GetPosition(canvas) - (_movePoint + new Vector(cropRect.ActualWidth, 0));
+                var p = e.GetPosition(canvas) - (_movePoint + new Vector(scanArea.ActualWidth, 0));
 
                 if (old_width - (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X + old_width); }
+                { scanArea.Width = old_width - (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X + old_width); }
                 return;
             }
         }
 
-        public static void CropRectangleLeftLBM(object sender, MouseButtonEventArgs eventArgs)
+        public static void ScanAreaLeftLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            canvas.MouseMove += CropRectangleLeftChangeSize;
+            canvas.MouseMove += ScanAreaLeftChangeSize;
         }
-        private static void CropRectangleLeftChangeSize(object sender, MouseEventArgs e)
+        private static void ScanAreaLeftChangeSize(object sender, MouseEventArgs e)
         {
             if (difference1.X >= 1 & difference2.X >= 1 & difference1.Y >= 1 & difference2.Y >= 1)
             {
-                mainWindow.Cursor = Cursors.SizeWE;
+                MainWindowInstance.Cursor = Cursors.SizeWE;
 
                 newPos = Mouse.GetPosition(canvas);
 
                 var p = e.GetPosition(canvas) - _movePoint;
 
                 if (old_width + (oldPos.X - newPos.X) > 100)
-                { cropRect.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(cropRect, p.X); }
+                { scanArea.Width = old_width + (oldPos.X - newPos.X); Canvas.SetLeft(scanArea, p.X); }
                 return;
             }
         }
 
 
 
-        // Метод CropRectangleDragMode реализует функцию перемещения CropRectangle.
-        public static void CropRectangleCenterLBM(object sender, MouseButtonEventArgs eventArgs)
+        // Метод ScanAreaDragMode реализует функцию перемещения ScanArea.
+        public static void ScanAreaCenterLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
 
             RemoveAllCanvasMouseEventArgs();
 
-            oldPos = Mouse.GetPosition(cropRect);
+            oldPos = Mouse.GetPosition(scanArea);
 
-            canvas.MouseMove += CropRectangleDragMode;
+            canvas.MouseMove += ScanAreaDragMode;
         }
-        private static void CropRectangleDragMode(object sender, MouseEventArgs e)
+        private static void ScanAreaDragMode(object sender, MouseEventArgs e)
         {
-             if (difference1.X < 0) { Canvas.SetLeft(cropRect, 0); RemoveAllCanvasMouseEventArgs(); return; }
-             if (difference2.X < 0) { Canvas.SetLeft(cropRect, canvas.ActualWidth - cropRect.ActualWidth); RemoveAllCanvasMouseEventArgs(); return; }
-             if (difference1.Y < 0) { Canvas.SetTop(cropRect, 0); RemoveAllCanvasMouseEventArgs(); return; }
-             if (difference2.Y < 0) { Canvas.SetTop(cropRect, canvas.ActualHeight - cropRect.ActualHeight); RemoveAllCanvasMouseEventArgs(); return; }
+             if (difference1.X < 0) { Canvas.SetLeft(scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
+             if (difference2.X < 0) { Canvas.SetLeft(scanArea, canvas.ActualWidth - scanArea.ActualWidth); RemoveAllCanvasMouseEventArgs(); return; }
+             if (difference1.Y < 0) { Canvas.SetTop(scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
+             if (difference2.Y < 0) { Canvas.SetTop(scanArea, canvas.ActualHeight - scanArea.ActualHeight); RemoveAllCanvasMouseEventArgs(); return; }
 
-             Canvas.SetLeft(cropRect, e.GetPosition(canvas).X - oldPos.X);
-             Canvas.SetTop(cropRect, e.GetPosition(canvas).Y - oldPos.Y);
+             Canvas.SetLeft(scanArea, e.GetPosition(canvas).X - oldPos.X);
+             Canvas.SetTop(scanArea, e.GetPosition(canvas).Y - oldPos.Y);
         }
 
 
         // !!!!!!!!!!!!!!! надо завершить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public static void CropRectangleAdaptSize(object sender, SizeChangedEventArgs e)
+        public static void ScanAreaAdaptSize(object sender, SizeChangedEventArgs e)
         {
-            Vector difference = (Point)e.NewSize - (Point)e.PreviousSize;
-            Vector XY_left_top_cropRect = cropRect.PointToScreen(new Point(0, 0)) - canvas.PointToScreen(new Point(0, 0));
-            Vector XY_rigth_bottom_cropRect = canvas.PointToScreen(new Point(0, 0)) + new Vector(canvas.ActualWidth, canvas.ActualHeight)
-                - (cropRect.PointToScreen(new Point(0, 0)) + new Vector(cropRect.ActualWidth - 5, cropRect.ActualHeight - 5));
+            try
+            {
+                Vector difference = (Point)e.NewSize - (Point)e.PreviousSize;
+                Vector XY_left_top_cropRect = scanArea.PointToScreen(new Point(0, 0)) - canvas.PointToScreen(new Point(0, 0));
+                Vector XY_rigth_bottom_cropRect = canvas.PointToScreen(new Point(0, 0)) + new Vector(canvas.ActualWidth, canvas.ActualHeight)
+                    - (scanArea.PointToScreen(new Point(0, 0)) + new Vector(scanArea.ActualWidth - 5, scanArea.ActualHeight - 5));
 
-            if (XY_rigth_bottom_cropRect.X - 5 < 0) Canvas.SetLeft(cropRect, e.NewSize.Width - cropRect.ActualWidth);
-            if (XY_rigth_bottom_cropRect.Y - 5 < 0) Canvas.SetTop(cropRect, e.NewSize.Height - cropRect.ActualHeight);
+                if (XY_rigth_bottom_cropRect.X - 5 < 0) Canvas.SetLeft(scanArea, e.NewSize.Width - scanArea.ActualWidth);
+                if (XY_rigth_bottom_cropRect.Y - 5 < 0) Canvas.SetTop(scanArea, e.NewSize.Height - scanArea.ActualHeight);
+            }
             //if (XY_left_top_cropRect.X - 5 < 0) Canvas.SetLeft(cropRect, 5);
             //if (XY_left_top_cropRect.Y - 5 < 0) Canvas.SetTop(cropRect, 5);
+            catch (System.NullReferenceException ) { }
         }
     }
 }

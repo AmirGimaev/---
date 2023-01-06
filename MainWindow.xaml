@@ -6,12 +6,14 @@
         xmlns:MahAppsControls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:controlzex="urn:controlzex" 
         xmlns:local="clr-namespace:Дипломная_работа___Гимаев_Амир"
+        xmlns:classes="clr-namespace:Дипломная_работа___Гимаев_Амир.Classes"
         mc:Ignorable="d" 
         Title="Оцифровка докуметов" 
-        FontStyle="{Binding Font}"
         MinHeight="500" MinWidth="900" 
         WindowStartupLocation="CenterScreen" 
-        Background="#FFC8DCFF" Icon="/Images/DocIco.ico" >
+        Background="White" Icon="/Images/DocIco.ico"
+        Closing="MetroWindowClosing" 
+        Initialized="MetroWindowInitialized" >
 
     <Grid>
         <Grid>
@@ -28,28 +30,53 @@
                 <GridSplitter Grid.Column="1" Width="2"/>
                 <GridSplitter Grid.Column="3" Width="2"/>
 
-                <Grid Grid.Column="2" MouseLeftButtonUp="StopChangeSizeAndDragCropRectangle">
+                <Grid Grid.Column="0" x:Name="ScanSettings" Background="#FFF0F0F0">
+                    <TextBlock HorizontalAlignment="Left" Margin="10,15,0,0" TextWrapping="Wrap" Text="Путь" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="Имя снимка" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,76,0,0" TextWrapping="Wrap" Text="DPI" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,113,0,0" TextWrapping="Wrap" Text="Контраст" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="Яркость" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="6,171,0,0" TextWrapping="Wrap" Text="Цветность" VerticalAlignment="Top" FontFamily="{Binding FontFamily}" Width="58"/>
+                    <TextBox x:Name="ScanPath" Margin="40,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25"/>
+                    <Button x:Name="SelectPathButton" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="35" Height="25" Click="SelectPathForPhoto">
+                        <Image Source="/Images/FolderPNG.png"/>
+                    </Button>
+                    <TextBox x:Name="ScanName" Margin="82,40,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25"/>
+                    <Slider x:Name="ScanContrast" Margin="69,109,10,0" VerticalAlignment="Top" Minimum="-100" SmallChange="1" ValueChanged="ContrastValueChanged"/>
+                    <Slider x:Name="ScanBrightness" Margin="69,138,10,0" VerticalAlignment="Top" Minimum="-100" SmallChange="1" ValueChanged="BrightnessValueChanged"/>
+                    <ComboBox x:Name="ChromaComboBox" Margin="69,166,10,0" VerticalAlignment="Top" SelectionChanged="SelectChroma">
+                        <ComboBoxItem Content="Цветной"/>
+                        <ComboBoxItem Content="Оттенки серого"/>
+                        <ComboBoxItem Content="Черно-белый"/>
+                    </ComboBox>
+                    <ComboBox x:Name="ScanDPI" Margin="40,71,10,0" VerticalAlignment="Top"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="6,210,0,0" TextWrapping="Wrap" Text="Устройство" VerticalAlignment="Top" FontFamily="{Binding FontFamily}" Width="71"/>
+                    <ComboBox x:Name="SelectDevice" Margin="77,205,10,0" VerticalAlignment="Top" />
+
+                </Grid>
+
+                <Grid Grid.Column="2" MouseLeftButtonUp="StopChangeSizeAndDragScanArea">
 
                     <!-- Canvas для реализации возможности перемещения объекта Crop -->
-                    <Canvas x:Name="MovingSpaceCanvas" SizeChanged="MovingSpace_Canvas_SizeChanged" MouseLeave="StopChangeSizeAndDragCropRectangle">
+                    <Canvas x:Name="MovingSpaceCanvas" SizeChanged="MovingSpace_Canvas_SizeChanged" MouseLeave="StopChangeSizeAndDragScanArea">
 
                         <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="ReferenceInfo" Canvas.Left="0" Canvas.Top="0"
                         Width="{Binding ActualWidth, ElementName=MovingSpaceCanvas}"
                         Height="{Binding ActualHeight, ElementName=MovingSpaceCanvas}" Background="#FFEAEAEA">
-                            <Image x:Name="WebcamViewer" Stretch="Uniform"  Margin="0,0,0,0"/>
+                            <Image x:Name="FrameArea" Stretch="Uniform"  Margin="0,0,0,0"/>
                         </DockPanel>
 
                         <!-- Область снимка -->
-                        <Grid x:Name="CropRectangle" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Canvas.Left="100" Canvas.Top="50">
-                            <Rectangle x:Name="CropRectangle_left_top" HorizontalAlignment="Left" Height="5" Fill="Red" VerticalAlignment="Top" Width="5" MouseLeftButtonDown="CropRectangle_left_top_MouseLeftButtonDown"  Cursor="SizeNWSE"/>
-                            <Rectangle x:Name="CropRectangle_right_top" HorizontalAlignment="Right" Height="5" Fill="Red" VerticalAlignment="Top" Width="5" MouseLeftButtonDown="CropRectangle_right_top_MouseLeftButtonDown"  Cursor="SizeNESW"/>
-                            <Rectangle x:Name="CropRectangle_botton_left" HorizontalAlignment="Left" Height="5" Fill="Red" VerticalAlignment="Bottom" Width="5" MouseLeftButtonDown="CropRectangle_botton_left_MouseLeftButtonDown"  Cursor="SizeNESW"/>
-                            <Rectangle x:Name="CropRectangle_botton_right" HorizontalAlignment="Right" Height="5" Fill="Red" VerticalAlignment="Bottom" Width="5" MouseLeftButtonDown="CropRectangle_botton_right_MouseLeftButtonDown" Cursor="SizeNWSE"/>
-                            <Rectangle x:Name="CropRectangle_top" Height="5" Fill="Red" VerticalAlignment="Top" Margin="5,0,5,0" Cursor="SizeNS" MouseLeftButtonDown="CropRectangle_top_MouseLeftButtonDown"/>
-                            <Rectangle x:Name="CropRectangle_left" HorizontalAlignment="Left" Fill="Red" Width="5" Margin="0,5,0,5" Cursor="SizeWE" MouseLeftButtonDown="CropRectangle_left_MouseLeftButtonDown"/>
-                            <Rectangle x:Name="CropRectangle_right" HorizontalAlignment="Right" Fill="Red" Width="5" Margin="0,5,0,5" Cursor="SizeWE" MouseLeftButtonDown="CropRectangle_right_MouseLeftButtonDown"/>
-                            <Rectangle x:Name="CropRectangle_botton" Height="5" Fill="Red" VerticalAlignment="Bottom" Margin="5,0,5,0" MouseLeftButtonDown="CropRectangle_botton_MouseLeftButtonDown" Cursor="SizeNS"/>
-                            <Rectangle x:Name="CropRectangle_center" Margin="5,5,5,5" MouseLeftButtonDown="CropRectangle_center_MouseLeftButtonDown" Fill="Transparent" Cursor="Hand" MouseLeftButtonUp="StopChangeSizeAndDragCropRectangle"/>
+                        <Grid x:Name="ScanArea" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Canvas.Left="100" Canvas.Top="50">
+                            <Rectangle x:Name="ScanArea_left_top" HorizontalAlignment="Left" Height="5" Fill="Red" VerticalAlignment="Top" Width="5" MouseLeftButtonDown="ScanArea_left_top_MouseLeftButtonDown"  Cursor="SizeNWSE"/>
+                            <Rectangle x:Name="ScanArea_right_top" HorizontalAlignment="Right" Height="5" Fill="Red" VerticalAlignment="Top" Width="5" MouseLeftButtonDown="ScanArea_right_top_MouseLeftButtonDown"  Cursor="SizeNESW"/>
+                            <Rectangle x:Name="ScanArea_botton_left" HorizontalAlignment="Left" Height="5" Fill="Red" VerticalAlignment="Bottom" Width="5" MouseLeftButtonDown="ScanArea_botton_left_MouseLeftButtonDown"  Cursor="SizeNESW"/>
+                            <Rectangle x:Name="ScanArea_botton_right" HorizontalAlignment="Right" Height="5" Fill="Red" VerticalAlignment="Bottom" Width="5" MouseLeftButtonDown="ScanArea_botton_right_MouseLeftButtonDown" Cursor="SizeNWSE"/>
+                            <Rectangle x:Name="ScanArea_top" Height="5" Fill="Red" VerticalAlignment="Top" Margin="5,0,5,0" Cursor="SizeNS" MouseLeftButtonDown="ScanArea_top_MouseLeftButtonDown"/>
+                            <Rectangle x:Name="ScanArea_left" HorizontalAlignment="Left" Fill="Red" Width="5" Margin="0,5,0,5" Cursor="SizeWE" MouseLeftButtonDown="ScanArea_left_MouseLeftButtonDown"/>
+                            <Rectangle x:Name="ScanArea_right" HorizontalAlignment="Right" Fill="Red" Width="5" Margin="0,5,0,5" Cursor="SizeWE" MouseLeftButtonDown="ScanArea_right_MouseLeftButtonDown"/>
+                            <Rectangle x:Name="ScanArea_botton" Height="5" Fill="Red" VerticalAlignment="Bottom" Margin="5,0,5,0" MouseLeftButtonDown="ScanArea_botton_MouseLeftButtonDown" Cursor="SizeNS"/>
+                            <Rectangle x:Name="ScanArea_center" Margin="5,5,5,5" MouseLeftButtonDown="ScanArea_center_MouseLeftButtonDown" Fill="Transparent" Cursor="Hand" MouseLeftButtonUp="StopChangeSizeAndDragScanArea"/>
                         </Grid>
                     </Canvas>
                 </Grid>
@@ -69,28 +96,36 @@
             <Grid.Background>
                 <ImageBrush/>
             </Grid.Background>
-            <MahAppsControls:FontIcon x:Name="DiCropRectangleory___________" Width="50" Height="50" HorizontalAlignment="Left" Margin="10,12,0,12" />
-            <MahAppsControls:FontIcon x:Name="Save___________" Width="50" Height="50" HorizontalAlignment="Left" Margin="70,12,0,13" />
-            <MahAppsControls:FontIcon x:Name="SaveAll__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="130,12,0,12" />
-            <MahAppsControls:FontIcon x:Name="Send__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="190,12,0,12" />
-            <MahAppsControls:FontIcon x:Name="SaveAsPDF" Width="50" Height="50" HorizontalAlignment="Left" Margin="250,12,0,12" />
+            <Button x:Name="DiScanAreaory___________" Width="50" Height="50" HorizontalAlignment="Left" Margin="10,12,0,12" />
+            <Button x:Name="Save___________" Width="50" Height="50" HorizontalAlignment="Left" Margin="70,12,0,13" >
+                <Image Source="/Images/SavePNG.png" />
+            </Button>
+            <Button x:Name="SaveAll__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="130,12,0,12" />
+            <Button x:Name="Send__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="190,12,0,12" />
+            <Button x:Name="SaveAsPDF" Width="50" Height="50" HorizontalAlignment="Left" Margin="250,12,0,12" />
 
-            <Image x:Name="SettingButton" Width="50" Height="50" HorizontalAlignment="Right" Margin="0,12,10,12" MouseLeftButtonUp="SettingButtonMouseLeftButtonUp" Source="/Images/SettingPNG.png"/>
+            <Button x:Name="SettingButton" Width="50" Height="50" HorizontalAlignment="Right" Margin="0,12,10,12" MouseLeftButtonDown="SettingButtonMouseLeftButtonUp">
+                <Image Source="/Images/SettingPNG.png" MouseLeftButtonDown="SettingButtonMouseLeftButtonUp"/>
+            </Button>
         </Grid>
 
 
 
         <!-- Страница с настройками -->
-        <MahAppsControls:Flyout x:Name="SettingPage" HorizontalAlignment="Right" Width="250" Position="Right" Header="Настройки">
+        <MahAppsControls:Flyout x:Name="SettingPage" HorizontalAlignment="Right" Width="350" Position="Right" Header="Настройки" >
+
             <Grid>
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Тема" VerticalAlignment="Top" FontStyle="{Binding Font}"/>
-                
-                <ComboBox Margin="42,10,10,0" VerticalAlignment="Top" SelectedIndex="0">
+
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Тема" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+
+                <ComboBox x:Name="SelectThemeComboBox" Margin="42,10,10,0" VerticalAlignment="Top" SelectedIndex="0" SelectionChanged="SelectTheme">
                     <ComboBoxItem Content="Светлое"/>
                     <ComboBoxItem Content="Темное"/>
                 </ComboBox>
-                
-                <ComboBox Margin="42,41,10,0" VerticalAlignment="Top" SelectedIndex="0">
+
+                <TextBlock HorizontalAlignment="Left" Margin="10,46,0,0" TextWrapping="Wrap" Text="Цвет" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+
+                <ComboBox x:Name="SelectColorWindowComboBox" Margin="42,41,10,0" VerticalAlignment="Top" SelectedIndex="0" SelectionChanged="SelectTheme">
                     <ComboBoxItem Content="Красный"/>
                     <ComboBoxItem Content="Зелёный"/>
                     <ComboBoxItem Content="Синий"/>
@@ -115,11 +150,12 @@
                     <ComboBoxItem Content="Темно-серо-коричневый"/>
 
                 </ComboBox>
-                
-                <TextBlock HorizontalAlignment="Left" Margin="10,46,0,0" TextWrapping="Wrap" Text="Цвет" VerticalAlignment="Top" FontStyle="{Binding Font}"/>
+
+
 
             </Grid>
         </MahAppsControls:Flyout>
+
 
 
 

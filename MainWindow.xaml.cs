@@ -25,49 +25,33 @@ namespace Дипломная_работа___Гимаев_Амир
     {
         public MainWindow()
         {
-            ProgrammSetting.mainWindow = this;
-            ProgrammSetting.ReadSettingFileAndSettingProgramm();
-
             InitializeComponent();
-            
-            CropRectangleClass.mainWindow = this;
-            CropRectangleClass.InitializationCropRectangleClass();
-
-            // Добавление обработчика события, который выделяет весь список при нажатии клавишь Ctrl + A
-            ListOfPhotos.InputBindings.Add(new KeyBinding(ApplicationCommands.SelectAll,
-                          new KeyGesture(Key.A, ModifierKeys.Control)));
-            ListOfPhotos.CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, (_sender, _e) =>
-            {
-                ListOfPhotos.SelectAll();
-            }));
-
-            DataContext = ProgrammSetting.MainWindowsStyleSetting.Font;
         }
 
 
         private void MovingSpace_Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            CropRectangleClass.CropRectangleAdaptSize(sender, e);
+            ScanAreaClass.ScanAreaAdaptSize(sender, e);
         }
 
-        private void CropRectangle_left_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_left_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleLeftTopLBM(sender, e);
+            ScanAreaClass.ScanAreaLeftTopLBM(sender, e);
         }
 
-        private void CropRectangle_right_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_right_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleRightTopLBM(sender, e);
+            ScanAreaClass.ScanAreaRightTopLBM(sender, e);
         }
 
-        private void CropRectangle_botton_left_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_botton_left_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleLeftBottonLBM(sender, e);
+            ScanAreaClass.ScanAreaLeftBottonLBM(sender, e);
         }
 
-        private void CropRectangle_botton_right_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_botton_right_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleRightBottonLBM(sender, e);
+            ScanAreaClass.ScanAreaRightBottonLBM(sender, e);
         }
 
 
@@ -80,50 +64,24 @@ namespace Дипломная_работа___Гимаев_Амир
 
      
 
-        private void CropRectangle_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleTopLBM(sender, e);
+            ScanAreaClass.ScanAreaTopLBM(sender, e);
         }
 
-        private void CropRectangle_left_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_left_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleLeftLBM(sender, e);
+            ScanAreaClass.ScanAreaLeftLBM(sender, e);
         }
 
-        private void CropRectangle_right_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_right_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleRightLBM(sender, e);
+            ScanAreaClass.ScanAreaRightLBM(sender, e);
         }
 
-        private void CropRectangle_botton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanArea_botton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.CropRectangleBottonLBM(sender, e);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void CropRectangle_center_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            CropRectangleClass.CropRectangleCenterLBM(sender,e);
+            ScanAreaClass.ScanAreaBottonLBM(sender, e);
         }
 
 
@@ -132,16 +90,82 @@ namespace Дипломная_работа___Гимаев_Амир
 
 
 
-        private void StopChangeSizeAndDragCropRectangle(object sender, MouseButtonEventArgs e)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private void ScanArea_center_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CropRectangleClass.RemoveAllCanvasMouseEventArgs();
+            ScanAreaClass.ScanAreaCenterLBM(sender,e);
         }
-        private void StopChangeSizeAndDragCropRectangle(object sender, MouseEventArgs e)
+
+
+
+
+
+
+
+        private void StopChangeSizeAndDragScanArea(object sender, MouseButtonEventArgs e)
         {
-             CropRectangleClass.RemoveAllCanvasMouseEventArgs();
+            ScanAreaClass.RemoveAllCanvasMouseEventArgs();
+        }
+        private void StopChangeSizeAndDragScanArea(object sender, MouseEventArgs e)
+        {
+             ScanAreaClass.RemoveAllCanvasMouseEventArgs();
+        }
+
+        
+
+        private void SelectTheme(object sender, SelectionChangedEventArgs e)
+        {
+            ProgrammSetting.MainWindowsStyleSetting.ChangeTheme();
         }
 
         private void SettingButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e) 
             => SettingPage.IsOpen = true;
+
+        private void MetroWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ProgrammSetting.WriteSettingFileNewSettings();
+
+            AForgeDocumentDisplay.StopFrame();
+        }
+
+        private void MetroWindowInitialized(object sender, EventArgs e)
+        {
+            ProgrammSetting.MainWindowInitialization(sender as MainWindow);
+        }
+
+        private void SelectChroma(object sender, SelectionChangedEventArgs e)
+        {
+            AForgeDocumentDisplay.SelectChroma(e);
+        }
+
+        private void ContrastValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ProgrammSetting.PhotoSetting.Contrast = Convert.ToInt32(e.NewValue);
+        }
+
+        private void BrightnessValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ProgrammSetting.PhotoSetting.Brightness = Convert.ToInt32(e.NewValue);
+        }
+
+
+        private void SelectPathForPhoto(object sender, RoutedEventArgs e)
+        {
+            PDF.SelectFolderPath(ScanPath);
+        }
     }
 }

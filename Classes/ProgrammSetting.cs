@@ -5,6 +5,10 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading;
 
 namespace Дипломная_работа___Гимаев_Амир.Classes
 {
@@ -14,14 +18,17 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         private static MainWindow MainWindowInstance; // Здесь храниться экземпляр главного окна
 
 
-
-
         static public class MainWindowsStyleSetting 
         {
+            internal static string StyleTitleShade, StyleTitleColor; // Стиль окна
 
-            private static string StyleTitleShade, StyleTitleColor; // Стиль окна
+            internal static int SelectThemeSelectedIndex, SelectColorWindowSelectedIndex;
 
-            public static string Font; // Шрифт
+            internal static string Font; // Шрифт
+
+            internal static int MainWindowHeight, MainWindowWidht;
+
+
 
             private static string[,] Colors = 
             {
@@ -90,8 +97,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         static public class ScanAreaSetting 
         {
-            public static int RotateFrames; // Оринтация кадров
+            public static int RotateFrames { get; internal set; } // Оринтация кадров
 
+            internal static Point PositionArea;
+
+            internal static int AreaHeight, AreaWidth;
         }
 
 
@@ -103,16 +113,17 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
             public static TimeSpan SnapshotTime; // Время для таймера
 
-            public static int Brightness, Contrast;
+            public static double Brightness, Contrast;
+
+            public static int ChromaSelectedIndex;
 
         }
+        
 
         // Инициализцаия всех объектов 
         public static void MainWindowInitialization(MainWindow _mainWindow)
         {
             MainWindowInstance = _mainWindow;
-
-            ReadSettingFileAndSettingProgramm();
 
             ScanAreaClass.MainWindowInstance = MainWindowInstance;
             ScanAreaClass.InitializationScanAreaClass();
@@ -126,6 +137,22 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             }));
 
             AForgeDocumentDisplay.Initialize(MainWindowInstance);
+
+            MainWindowInstance.ScanArea.Height = ScanAreaSetting.AreaHeight;
+            MainWindowInstance.ScanArea.Width = ScanAreaSetting.AreaWidth;
+
+            Canvas.SetLeft(MainWindowInstance.ScanArea, ScanAreaSetting.PositionArea.X);
+            Canvas.SetTop(MainWindowInstance.ScanArea, ScanAreaSetting.PositionArea.Y);
+
+            MainWindowInstance.SelectThemeComboBox.SelectedIndex = MainWindowsStyleSetting.SelectThemeSelectedIndex;
+            MainWindowInstance.SelectColorWindowComboBox.SelectedIndex = MainWindowsStyleSetting.SelectColorWindowSelectedIndex;
+
+            MainWindowInstance.Height = MainWindowsStyleSetting.MainWindowHeight;
+            MainWindowInstance.Width = MainWindowsStyleSetting.MainWindowWidht;
+
+            MainWindowInstance.ScanBrightness.Value = PhotoSetting.Brightness;
+            MainWindowInstance.ScanContrast.Value = PhotoSetting.Contrast;
+            MainWindowInstance.ChromaComboBox.SelectedIndex = PhotoSetting.ChromaSelectedIndex;
 
             // установка шрифта ( не законченно ... )
             TextBlock _tb = new TextBlock { FontFamily = new FontFamily(MainWindowsStyleSetting.Font) };
@@ -161,22 +188,22 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
                 // Сохраненный цвет заднего фона главного окна
-                MainWindowInstance.SelectThemeComboBox.SelectedIndex = Convert.ToInt32(formatedSetting[0]);
+                MainWindowsStyleSetting.SelectThemeSelectedIndex = Convert.ToInt32(formatedSetting[0]);
 
 
 
 
 
                 // Сохраненный цвет заднего фона окон инструментов
-                MainWindowInstance.SelectColorWindowComboBox.SelectedIndex = Convert.ToInt32(formatedSetting[1]);
+                MainWindowsStyleSetting.SelectColorWindowSelectedIndex = Convert.ToInt32(formatedSetting[1]);
 
 
 
 
                 // 
-                MainWindowInstance.Height = Convert.ToInt32(formatedSetting[2]); 
+                MainWindowsStyleSetting.MainWindowHeight = Convert.ToInt32(formatedSetting[2]);
 
-                MainWindowInstance.Width = Convert.ToInt32(formatedSetting[3]);
+                MainWindowsStyleSetting.MainWindowWidht = Convert.ToInt32(formatedSetting[3]);
 
 
 
@@ -190,9 +217,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-                MainWindowInstance.ScanArea.Height = Convert.ToInt32(formatedSetting[7]);
+                ScanAreaSetting.AreaHeight = Convert.ToInt32(formatedSetting[7]);
 
-                MainWindowInstance.ScanArea.Width = Convert.ToInt32(formatedSetting[8]);
+                ScanAreaSetting.AreaWidth = Convert.ToInt32(formatedSetting[8]);
 
 
 
@@ -204,18 +231,15 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
                 MainWindowsStyleSetting.Font = formatedSetting[11];
 
-                Canvas.SetLeft(MainWindowInstance.ScanArea, Convert.ToSingle(formatedSetting[12].Split(';')[0]));
-                Canvas.SetTop(MainWindowInstance.ScanArea, Convert.ToSingle(formatedSetting[12].Split(';')[1]));
+                ScanAreaSetting.PositionArea = new Point(Convert.ToInt32(formatedSetting[12].Split(';')[0]), 
+                    Convert.ToInt32(formatedSetting[12].Split(';')[1]));
 
 
 
-                MainWindowInstance.ScanBrightness.Value = Convert.ToSingle(formatedSetting[13]); 
-                PhotoSetting.Brightness = Convert.ToInt32(MainWindowInstance.ScanBrightness.Value);
+                PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[13]); 
+                PhotoSetting.Contrast = Convert.ToSingle(formatedSetting[14]);
 
-                MainWindowInstance.ScanContrast.Value = Convert.ToSingle(formatedSetting[14]);
-                PhotoSetting.Contrast = Convert.ToInt32(MainWindowInstance.ScanContrast.Value);
-
-                MainWindowInstance.ChromaComboBox.SelectedIndex = Convert.ToInt32(formatedSetting[15]);
+                PhotoSetting.ChromaSelectedIndex = Convert.ToInt32(formatedSetting[15]);
 
                 AForgeDocumentDisplay.CurrentDevice = formatedSetting[16];
             }

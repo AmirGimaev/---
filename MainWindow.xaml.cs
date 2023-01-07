@@ -132,7 +132,7 @@ namespace Дипломная_работа___Гимаев_Амир
             ProgrammSetting.MainWindowsStyleSetting.ChangeTheme();
         }
 
-        private void SettingButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e) 
+        private void OpenSettingPage(object sender, RoutedEventArgs e) 
             => SettingPage.IsOpen = true;
 
         private void MetroWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -166,6 +166,19 @@ namespace Дипломная_работа___Гимаев_Амир
         private void SelectPathForPhoto(object sender, RoutedEventArgs e)
         {
             PDF.SelectFolderPath(ScanPath);
+        }
+
+        private void TakeASnapshot(object sender, RoutedEventArgs e)
+        {
+            AForgeDocumentDisplay.TakeASnapshotOfTheDocument();
+        }
+
+
+        private void MetroWindowIsLoaded(object sender, RoutedEventArgs e)
+        {
+
+
+            
         }
     }
 }

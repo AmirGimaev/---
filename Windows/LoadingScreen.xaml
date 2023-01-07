@@ -1,0 +1,30 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Дипломная_работа___Гимаев_Амир.Windows"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Дипломная_работа___Гимаев_Амир.Windows.LoadingScreen"
+        mc:Ignorable="d"
+        Title="LoadingScreen" 
+        Height="450" Width="450"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize" 
+        WindowStyle="None" 
+        Background="Transparent" 
+        AllowsTransparency="True"
+        Loaded="GetSettingForMainWindow">
+
+    <Grid>
+        <Border CornerRadius="270" Background="#FFFDFDFD" Margin="20"/>
+
+        <Image Margin="190,40,190,330" Source="/Images/DocIco.ico" Opacity="0.1" />
+        <TextBlock Margin="50,120,50,0" TextWrapping="Wrap" Text="'Оцифровка документов'" VerticalAlignment="Top" TextAlignment="Center" FontSize="28" FontFamily="Dubai"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,162,0,0" TextWrapping="Wrap" Text="ПО для сканирования и обработки изображения " VerticalAlignment="Top" FontSize="14" Width="410" TextAlignment="Center"/>
+        <TextBlock x:Name="Progress" Margin="30,0,30,150" TextWrapping="Wrap" Text="Загрузка..." VerticalAlignment="Bottom" TextAlignment="Center"  FontSize="20"/>
+
+        <mah:ProgressRing x:Name="LoadRing"  Height="450" Width="450"  Foreground="{DynamicResource AccentColorBrush}" EllipseDiameterScale="0.3" />
+
+
+    </Grid>
+</Window>

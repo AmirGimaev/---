@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterScreen" 
         Background="White" Icon="/Images/DocIco.ico"
         Closing="MetroWindowClosing" 
-        Initialized="MetroWindowInitialized" >
+        Initialized="MetroWindowInitialized" Loaded="MetroWindowIsLoaded" >
 
     <Grid>
         <Grid>
@@ -104,8 +104,12 @@
             <Button x:Name="Send__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="190,12,0,12" />
             <Button x:Name="SaveAsPDF" Width="50" Height="50" HorizontalAlignment="Left" Margin="250,12,0,12" />
 
-            <Button x:Name="SettingButton" Width="50" Height="50" HorizontalAlignment="Right" Margin="0,12,10,12" MouseLeftButtonDown="SettingButtonMouseLeftButtonUp">
-                <Image Source="/Images/SettingPNG.png" MouseLeftButtonDown="SettingButtonMouseLeftButtonUp"/>
+            <Button x:Name="TakeShot" Width="100" Height="50" HorizontalAlignment="Left" Margin="325,12,0,12" Click="TakeASnapshot" >
+                <Image Source="/Images/TakePhotoPNG.png" />
+            </Button>
+
+            <Button x:Name="SettingButton" Width="50" Height="50" HorizontalAlignment="Right" Margin="0,12,10,12" Click="OpenSettingPage">
+                <Image Source="/Images/SettingPNG.png"/>
             </Button>
         </Grid>
 

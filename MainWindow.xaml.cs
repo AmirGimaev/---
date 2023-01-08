@@ -174,11 +174,9 @@ namespace Дипломная_работа___Гимаев_Амир
         }
 
 
-        private void MetroWindowIsLoaded(object sender, RoutedEventArgs e)
+        private void ListOfPhotos_Drop(object sender, DragEventArgs e)
         {
-
-
-            
+            AForgeDocumentDisplay.DropPhotosToListOfPhotos(e);
         }
     }
 }

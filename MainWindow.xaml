@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterScreen" 
         Background="White" Icon="/Images/DocIco.ico"
         Closing="MetroWindowClosing" 
-        Initialized="MetroWindowInitialized" Loaded="MetroWindowIsLoaded" >
+        Initialized="MetroWindowInitialized" >
 
     <Grid>
         <Grid>
@@ -58,12 +58,14 @@
                 <Grid Grid.Column="2" MouseLeftButtonUp="StopChangeSizeAndDragScanArea">
 
                     <!-- Canvas для реализации возможности перемещения объекта Crop -->
-                    <Canvas x:Name="MovingSpaceCanvas" SizeChanged="MovingSpace_Canvas_SizeChanged" MouseLeave="StopChangeSizeAndDragScanArea">
+                    <Canvas x:Name="MovingSpaceCanvas" SizeChanged="MovingSpace_Canvas_SizeChanged" MouseLeave="StopChangeSizeAndDragScanArea"
+                            Height="{Binding Path=ActualHeight, ElementName=FrameArea}" Width="{Binding Path=ActualWidth, ElementName=FrameArea}"
+                            MinHeight="480" MinWidth="600" >
 
                         <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="ReferenceInfo" Canvas.Left="0" Canvas.Top="0"
                         Width="{Binding ActualWidth, ElementName=MovingSpaceCanvas}"
                         Height="{Binding ActualHeight, ElementName=MovingSpaceCanvas}" Background="#FFEAEAEA">
-                            <Image x:Name="FrameArea" Stretch="Uniform"  Margin="0,0,0,0"/>
+                            <Image x:Name="FrameArea" Stretch="Uniform"  Margin="0,0,0,0" />
                         </DockPanel>
 
                         <!-- Область снимка -->
@@ -84,7 +86,7 @@
 
                 <!-- В ListOfPhotos хранится список фотографий с его кратким именем -->
                 <Grid Grid.Column="4" x:Name="GridOfListBox">
-                    <ListBox x:Name="ListOfPhotos" SelectionMode="Multiple"/>
+                    <ListBox x:Name="ListOfPhotos" SelectionMode="Multiple" AllowDrop="True" Drop="ListOfPhotos_Drop"/>
                 </Grid>
 
             </Grid>
@@ -116,7 +118,7 @@
 
 
         <!-- Страница с настройками -->
-        <MahAppsControls:Flyout x:Name="SettingPage" HorizontalAlignment="Right" Width="350" Position="Right" Header="Настройки" >
+        <MahAppsControls:Flyout x:Name="SettingPage" HorizontalAlignment="Right" Width="350" Position="Right" Header="Настройки" Visibility="Hidden">
 
             <Grid>
 

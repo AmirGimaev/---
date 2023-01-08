@@ -23,6 +23,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 {
     static internal class AForgeDocumentDisplay
     {
+
         private static MainWindow _mainWindow;
 
 
@@ -33,7 +34,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         public static string CurrentDevice; // Хранит "прозвище" текущего устройства вывода изображения
 
-        public static System.Windows.Media.PixelFormat CurrentPixelFormat;
+        public static System.Windows.Media.PixelFormat CurrentPixelFormat; // Цветность отображаемого изображения
+
+
 
         // Инициализация всех необходимых экземпляров
         public static void Initialize(in MainWindow _mw)
@@ -108,6 +111,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 if (msg == 0x0219 & (int)wParam == 7) // Если будет подключено или отключено (!любое!) устройство.
                 {
                     Devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+
                     if (Devices.Count > 0)
                     {
                         hwndSource.RemoveHook(UsbNotificationHandler);
@@ -122,7 +126,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-
+        // Вывод видеопотока с камеры на экран.
         private static void NewFrameWithEffect(object sender, NewFrameEventArgs e)
         {
             BitmapImage _bi; 
@@ -157,12 +161,17 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         }
 
 
+
+
         public static void SelectDevice(in int index)
         {
             VideoFrame.Stop();
             VideoFrame = new VideoCaptureDevice(Devices[index].MonikerString); 
             VideoFrame.Start();
         }
+
+
+
 
         public static void StopFrame() 
         {
@@ -176,51 +185,100 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                     }
             }));
         }
-        
+
+
+
+
+        private static uint _photoNumber = 0;
+
         public static void TakeASnapshotOfTheDocument()
         {
-            Vector difference1 = _mainWindow.ScanArea.PointToScreen(new Point(0, 0)) - _mainWindow.MovingSpaceCanvas.PointToScreen(new Point(0, 0));
+            Vector _difference1 = _mainWindow.ScanArea.PointToScreen(new Point(0, 0)) - _mainWindow.MovingSpaceCanvas.PointToScreen(new Point(0, 0));
 
             // Подготовка экземляра класса Crop для обрезки снимка
-            Crop crop = new Crop(new Rectangle
-                    (Convert.ToInt32(difference1.X) + 5, Convert.ToInt32(difference1.Y + 5),
+            Crop _crop = new Crop(new Rectangle
+                    (Convert.ToInt32(_difference1.X) + 5, Convert.ToInt32(_difference1.Y + 5),
             Convert.ToInt32(_mainWindow.ScanArea.Width - 5), Convert.ToInt32(_mainWindow.ScanArea.Height - 5)));
-            RenderTargetBitmap rtb = new RenderTargetBitmap
+            RenderTargetBitmap _rtb = new RenderTargetBitmap
                 ((int)_mainWindow.FrameArea.ActualWidth, (int)_mainWindow.FrameArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            rtb.Render(_mainWindow.FrameArea);
+            _rtb.Render(_mainWindow.FrameArea);
 
             // Сохранение снимка
-            PngBitmapEncoder png = new PngBitmapEncoder();
-            png.Frames.Add(BitmapFrame.Create(rtb));
-            MemoryStream stream = new MemoryStream();
-            png.Save(stream);
-            Image image = Image.FromStream(stream);
+            PngBitmapEncoder _png = new PngBitmapEncoder();
+            _png.Frames.Add(BitmapFrame.Create(_rtb));
+            MemoryStream _stream = new MemoryStream();
+            _png.Save(_stream);
+            Image _image = Image.FromStream(_stream);
 
             // Обрезка снимка
-            Bitmap newImage = crop.Apply((Bitmap)image);
+            Bitmap _newImage = _crop.Apply((Bitmap)_image);
 
-            // Сохранение снимка в заданном папке
-            newImage.Save($@"C:\Users\Amir\Desktop\{_mainWindow.ScanName.Text}.png");
+            if (!SavePhoto(_newImage)) return;
 
-            // В переменную _bi добавим ранне созданый снимок (для того чтобы добавить этот снимок в ListOfPhotos)
-            var _bi = new BitmapImage();
-            _bi.BeginInit();
-            _bi.UriSource = new Uri($@"C:\Users\Amir\Desktop\{_mainWindow.ScanName.Text}.png");
-            _bi.EndInit();
-
-            // В _sp будет храниться элемент Image (со снимком) и TextBlok (с кратким именем снимка)
-            StackPanel _sp = new StackPanel();
-            _sp.MaxHeight = 120;
-            _sp.Children.Add(new System.Windows.Controls.Image() { Stretch = Stretch.Uniform, MaxHeight = 100, MaxWidth = 100 });
-            _sp.Children.Add(new TextBlock());
-
-            (_sp.Children[0] as System.Windows.Controls.Image).Source = _bi;
-            (_sp.Children[1] as TextBlock).Text = _mainWindow.ScanName.Text;
-
-            ListBoxItem lbi = new ListBoxItem() { Content = _sp };
-
-            _mainWindow.ListOfPhotos.Items.Add(lbi);
+            AddPhotoToListOfPhotos(new string[] { $@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.png" });
         }
+
+        private static bool SavePhoto(Bitmap _image)
+        {
+            try
+            {
+                // Сохранение снимка в заданном папке
+
+                if (_mainWindow.ScanPath.Text != string.Empty)
+                    if (_mainWindow.ScanName.Text != string.Empty)
+                    {
+                        _image.Save($@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.png");
+                        return true;
+                    }
+                    else { _mainWindow.ShowMessageAsync("Оцифровка документов", "Задайте постоянную часть имени файла снимка"); return false; }
+                else { _mainWindow.ShowMessageAsync("Оцифровка документов", "Задайте путь к папке для сохранения снимков"); return false; }
+            }
+            catch (Exception)
+            {
+                _photoNumber++;
+                SavePhoto(_image);
+
+                return false; // ???...
+            }
+        }
+
+        private static void AddPhotoToListOfPhotos(string[] _photos)
+        {
+            foreach (string _fullPathPhoto in _photos)
+            {
+                if (_fullPathPhoto.EndsWith(".png")) return; // Если файл не является снимком формата .PNG, то произойдет выход из метода
+
+                // В переменную _bi добавим ранне созданый снимок (для того чтобы добавить этот снимок в ListOfPhotos)
+                var _bi = new BitmapImage();
+                _bi.BeginInit();
+                _bi.UriSource = new Uri(_fullPathPhoto);
+                _bi.EndInit();
+
+                // В _sp будет храниться элемент Image (со снимком) и TextBlok (с кратким именем снимка)
+                StackPanel _sp = new StackPanel();
+                _sp.MaxHeight = 120;
+                _sp.Children.Add(new System.Windows.Controls.Image() { Stretch = Stretch.Uniform, MaxHeight = 100, MaxWidth = 100 });
+                _sp.Children.Add(new TextBlock());
+
+                (_sp.Children[0] as System.Windows.Controls.Image).Source = _bi;
+                (_sp.Children[1] as TextBlock).HorizontalAlignment = HorizontalAlignment.Center;
+                (_sp.Children[1] as TextBlock).Text = _fullPathPhoto.Remove(0,_fullPathPhoto.LastIndexOf('\\') + 1);
+
+                ListBoxItem lbi = new ListBoxItem() { Content = _sp };
+
+                _mainWindow.ListOfPhotos.Items.Add(lbi);
+
+                _photoNumber++;
+            }
+        }
+
+        public static void DropPhotosToListOfPhotos(DragEventArgs e)
+        {
+            string[] _files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+
+            AddPhotoToListOfPhotos(_files);
+        }
+
 
         public static void SelectChroma(SelectionChangedEventArgs e)
         {

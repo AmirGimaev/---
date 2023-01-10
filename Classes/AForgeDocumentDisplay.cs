@@ -36,7 +36,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         public static System.Windows.Media.PixelFormat CurrentPixelFormat; // Цветность отображаемого изображения
 
-
+        public static ImageFormat ScanFormat; // Расширение для снимков
 
         // Инициализация всех необходимых экземпляров
         public static void Initialize(in MainWindow _mw)
@@ -144,7 +144,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 _bi = new BitmapImage();
                 _bi.BeginInit();
                 MemoryStream ms = new MemoryStream();
-                bitmap.Save(ms, ImageFormat.Bmp);
+                bitmap.Save(ms, ImageFormat.Png);
                 _bi.StreamSource = ms;
                 _bi.CacheOption = BitmapCacheOption.OnLoad;
                 _bi.EndInit();
@@ -172,18 +172,16 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-
+        // Останавливает работу AForge во время закрытия программы
         public static void StopFrame() 
         {
-            Application.Current.Dispatcher.Invoke(new ThreadStart(delegate
+            if (VideoFrame != null & VideoFrame.IsRunning)
             {
-                if (!(VideoFrame == null))
-                    if (VideoFrame.IsRunning)
-                    {
-                        VideoFrame.SignalToStop();
-                        VideoFrame = null;
-                    }
-            }));
+                VideoFrame.SignalToStop();
+                VideoFrame.NewFrame -= NewFrameWithEffect;
+                VideoFrame.WaitForStop();
+                VideoFrame = null;
+            }    
         }
 
 
@@ -213,9 +211,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             // Обрезка снимка
             Bitmap _newImage = _crop.Apply((Bitmap)_image);
 
+            string _currentPathFile = $@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.{ScanFormat}";
+
             if (!SavePhoto(_newImage)) return;
 
-            AddPhotoToListOfPhotos(new string[] { $@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.png" });
+            AddPhotoToListOfPhotos(new string[] { _currentPathFile });
         }
 
         private static bool SavePhoto(Bitmap _image)
@@ -227,7 +227,8 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 if (_mainWindow.ScanPath.Text != string.Empty)
                     if (_mainWindow.ScanName.Text != string.Empty)
                     {
-                        _image.Save($@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.png");
+                        _image.Save($@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.{ScanFormat}", ScanFormat); 
+                        _photoNumber++;
                         return true;
                     }
                     else { _mainWindow.ShowMessageAsync("Оцифровка документов", "Задайте постоянную часть имени файла снимка"); return false; }
@@ -246,7 +247,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             foreach (string _fullPathPhoto in _photos)
             {
-                if (_fullPathPhoto.EndsWith(".png")) return; // Если файл не является снимком формата .PNG, то произойдет выход из метода
+                // Если файл не является изображением, то произойдет выход из метода
+                if (!_fullPathPhoto.EndsWith(".Png") & !_fullPathPhoto.EndsWith(".Jpeg") 
+                    & !_fullPathPhoto.EndsWith(".Tiff") & !_fullPathPhoto.EndsWith(".Bmp")) return; 
 
                 // В переменную _bi добавим ранне созданый снимок (для того чтобы добавить этот снимок в ListOfPhotos)
                 var _bi = new BitmapImage();
@@ -255,7 +258,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 _bi.EndInit();
 
                 // В _sp будет храниться элемент Image (со снимком) и TextBlok (с кратким именем снимка)
-                StackPanel _sp = new StackPanel();
+                StackPanel _sp = new StackPanel() { Margin = new Thickness(5)};
                 _sp.MaxHeight = 120;
                 _sp.Children.Add(new System.Windows.Controls.Image() { Stretch = Stretch.Uniform, MaxHeight = 100, MaxWidth = 100 });
                 _sp.Children.Add(new TextBlock());
@@ -267,10 +270,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 ListBoxItem lbi = new ListBoxItem() { Content = _sp };
 
                 _mainWindow.ListOfPhotos.Items.Add(lbi);
-
-                _photoNumber++;
             }
         }
+
 
         public static void DropPhotosToListOfPhotos(DragEventArgs e)
         {
@@ -294,6 +296,25 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
                 case "Черно-белый":
                     CurrentPixelFormat = PixelFormats.BlackWhite;
+                    break;
+            }
+        }
+
+        public static void SelectFormat(SelectionChangedEventArgs e)
+        {
+            switch ((e.AddedItems[0] as ComboBoxItem).Content as string) 
+            {
+                case "JPG":
+                    ScanFormat = ImageFormat.Jpeg;
+                    break;
+                case "PNG":
+                    ScanFormat = ImageFormat.Png;
+                    break;
+                case "BMP":
+                    ScanFormat = ImageFormat.Bmp;
+                    break;
+                case "TIF":
+                    ScanFormat = ImageFormat.Tiff;
                     break;
             }
         }

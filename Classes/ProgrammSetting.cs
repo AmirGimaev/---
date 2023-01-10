@@ -117,6 +117,8 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
             public static int ChromaSelectedIndex;
 
+            public static int ScanFormatSelectedIndex;
+
         }
         
 
@@ -128,13 +130,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             ScanAreaClass.MainWindowInstance = MainWindowInstance;
             ScanAreaClass.InitializationScanAreaClass();
 
-            // Добавление обработчика события, который выделяет весь список при нажатии клавишь Ctrl + A
-            MainWindowInstance.ListOfPhotos.InputBindings.Add(new KeyBinding(ApplicationCommands.SelectAll,
-                          new KeyGesture(Key.A, ModifierKeys.Control)));
-            MainWindowInstance.ListOfPhotos.CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, (_sender, _e) =>
-            {
-                MainWindowInstance.ListOfPhotos.SelectAll();
-            }));
+            ListOfPhotosClass.Initialize(MainWindowInstance.ListOfPhotos);
 
             AForgeDocumentDisplay.Initialize(MainWindowInstance);
 
@@ -153,6 +149,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             MainWindowInstance.ScanBrightness.Value = PhotoSetting.Brightness;
             MainWindowInstance.ScanContrast.Value = PhotoSetting.Contrast;
             MainWindowInstance.ChromaComboBox.SelectedIndex = PhotoSetting.ChromaSelectedIndex;
+            MainWindowInstance.ScanFormat.SelectedIndex = PhotoSetting.ScanFormatSelectedIndex;
 
             // установка шрифта ( не законченно ... )
             TextBlock _tb = new TextBlock { FontFamily = new FontFamily(MainWindowsStyleSetting.Font) };
@@ -221,8 +218,6 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
                 ScanAreaSetting.AreaWidth = Convert.ToInt32(formatedSetting[8]);
 
-
-
                 ScanAreaSetting.RotateFrames = Convert.ToInt32(formatedSetting[9]);
 
 
@@ -237,11 +232,15 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
                 PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[13]); 
+
                 PhotoSetting.Contrast = Convert.ToSingle(formatedSetting[14]);
 
                 PhotoSetting.ChromaSelectedIndex = Convert.ToInt32(formatedSetting[15]);
 
                 AForgeDocumentDisplay.CurrentDevice = formatedSetting[16];
+
+                PhotoSetting.ScanFormatSelectedIndex = Convert.ToInt32(formatedSetting[17]);
+
             }
             else
             {
@@ -272,11 +271,12 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 $"Rotate={ScanAreaSetting.RotateFrames}\r\n" +
                 $"Timer={PhotoSetting.SnapshotTime.TotalSeconds}\r\n" +
                 $"Font={MainWindowsStyleSetting.Font}\r\n" +
-                $"PositionScanArea={MainWindowInstance.ScanArea.TranslatePoint(new System.Windows.Point(0, 0), MainWindowInstance.MovingSpaceCanvas)}\r\n" +
+                $"PositionScanArea={MainWindowInstance.ScanArea.TranslatePoint(new Point(0, 0), MainWindowInstance.MovingSpaceCanvas)}\r\n" +
                 $"Brightness={MainWindowInstance.ScanBrightness.Value}\r\n" +
                 $"Contrast={MainWindowInstance.ScanContrast.Value}\r\n" +
                 $"Chroma={MainWindowInstance.ChromaComboBox.SelectedIndex}\r\n" +
-                $"CurrentDeviceName={MainWindowInstance.SelectDevice.Text}";
+                $"CurrentDeviceName={MainWindowInstance.SelectDevice.Text}\r\n" +
+                $"ScanFormatSelectedIndex={MainWindowInstance.ScanFormat.SelectedIndex}";
 
             File.WriteAllText(settingFile.FullName, setting);
         }

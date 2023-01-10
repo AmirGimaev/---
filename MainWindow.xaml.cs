@@ -174,9 +174,19 @@ namespace Дипломная_работа___Гимаев_Амир
         }
 
 
-        private void ListOfPhotos_Drop(object sender, DragEventArgs e)
+        private void AddPicturesToListOfPhotos(object sender, DragEventArgs e)
         {
             AForgeDocumentDisplay.DropPhotosToListOfPhotos(e);
+        }
+
+        private void ChangeImageFormat(object sender, SelectionChangedEventArgs e)
+        {
+            AForgeDocumentDisplay.SelectFormat(e);
+        }
+
+        private void RemoveSelectionsInListOfPhotos(object sender, MouseButtonEventArgs e)
+        {
+            ListOfPhotosClass.RemoveSelected();
         }
     }
 }

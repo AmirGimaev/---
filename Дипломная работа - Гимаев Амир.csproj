@@ -86,6 +86,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\AForgeDocumentDisplay.cs" />
+    <Compile Include="Classes\ListOfPhotosClass.cs" />
     <Compile Include="Classes\ScanAreaClass.cs" />
     <Compile Include="Windows\LoadingScreen.xaml.cs">
       <DependentUpon>LoadingScreen.xaml</DependentUpon>

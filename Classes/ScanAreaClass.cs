@@ -25,7 +25,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         public static void InitializationScanAreaClass()
         {
             _canvas = MainWindowInstance.MovingSpaceCanvas;
-            _scanArea = _canvas.Children[1] as Grid;
+            _scanArea = MainWindowInstance.ScanArea;
 
             _canvas.MouseMove += CheckScanAreaSize; // благодаря этому ScanArea не будет выходит за рамки MovingSpaceCanvas
         }
@@ -38,6 +38,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             _movePoint = (Vector)eventArgs.GetPosition(_scanArea);
             _scanArea.CaptureMouse();
         }
+
 
         // RemoveAllCanvasMouseEventArgs используется для очищения всех обработчиков событий MouseMove
         public static void RemoveAllCanvasMouseEventArgs()

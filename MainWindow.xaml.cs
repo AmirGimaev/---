@@ -1,26 +1,12 @@
-﻿using ControlzEx.Standard;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Дипломная_работа___Гимаев_Амир.Classes;
 
 namespace Дипломная_работа___Гимаев_Амир
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
         public MainWindow()
@@ -187,6 +173,11 @@ namespace Дипломная_работа___Гимаев_Амир
         private void RemoveSelectionsInListOfPhotos(object sender, MouseButtonEventArgs e)
         {
             ListOfPhotosClass.RemoveSelected();
+        }
+
+        private void SaveAsPDFfile(object sender, RoutedEventArgs e)
+        {
+            PDF.OpenPDFFormatParametrsWindow(ListOfPhotos);
         }
     }
 }

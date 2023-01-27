@@ -8,6 +8,10 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         private static ListBox _listOfPhotos;
 
+        /// <summary>
+        /// Инициализация элемента ListOfPhotos в данном классе (также добавляется дополнительные обработчики событий).
+        /// </summary>
+        /// <param name="_lb"></param>
         public static void Initialize(ListBox _lb)
         {
 
@@ -23,7 +27,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         }
 
-        // Убирает всё выделеное
+        /// <summary>
+        /// Убирает всё выделеное в ListOfPhotos.
+        /// </summary>
         public static void RemoveSelected()
         {
             foreach (ListBoxItem _photo in _listOfPhotos.Items)

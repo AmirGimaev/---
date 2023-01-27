@@ -4,11 +4,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Windows.Input;
-using MahApps.Metro.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using MahApps.Metro.Controls.Dialogs;
-using System.Threading;
 
 namespace Дипломная_работа___Гимаев_Амир.Classes
 {
@@ -22,9 +17,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             internal static string StyleTitleShade, StyleTitleColor; // Стиль окна
 
-            internal static int SelectThemeSelectedIndex, SelectColorWindowSelectedIndex;
-
-            internal static string Font; // Шрифт
+            internal static int SelectThemeSelectedIndex, SelectColorWindowSelectedIndex; // Выбранная тема и цвет окна (сохранены в виде значения SelectedIndex)
 
             internal static int MainWindowHeight, MainWindowWidht;
 
@@ -57,14 +50,12 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             };
 
             
-
+            /// <summary>
+            /// Установка новой темы для окна.
+            /// </summary>
             public static void ChangeTheme()
             {
                 try { if (MainWindowInstance == null) return; } catch (Exception) {  }
-
-                if (MainWindowInstance.DataContext != null) 
-                    (MainWindowInstance.DataContext as TextBlock).FontFamily = new FontFamily(Font);
-
 
                     if (MainWindowInstance.SelectThemeComboBox.SelectedIndex == 0)
                     {
@@ -94,7 +85,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-
+        /// <summary>
+        /// Данный класс хранит свойства для ScanArea
+        /// </summary>
         static public class ScanAreaSetting 
         {
             public static int RotateFrames { get; internal set; } // Оринтация кадров
@@ -106,7 +99,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-
+        /// <summary>
+        /// Данный класс хранит свойства для снимков
+        /// </summary>
         static public class PhotoSetting 
         {
             public static string LastPathForPhotos, LastNameForPhoto, LastNameForPDF; // Последнее использованные имена
@@ -120,15 +115,17 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             public static int ScanFormatSelectedIndex;
 
         }
-        
 
-        // Инициализцаия всех объектов 
+
+        /// <summary>
+        /// Инициализцаия всех объектов в ПО, установка всех параметров из файла Setting.txt.
+        /// </summary>
+        /// <param name="_mainWindow">Экземпляр окна MainWindow. Использутся в качестве ссылки на дочерние элементы.</param>
         public static void MainWindowInitialization(MainWindow _mainWindow)
         {
             MainWindowInstance = _mainWindow;
 
-            ScanAreaClass.MainWindowInstance = MainWindowInstance;
-            ScanAreaClass.InitializationScanAreaClass();
+            ScanAreaClass.InitializationScanAreaClass(MainWindowInstance);
 
             ListOfPhotosClass.Initialize(MainWindowInstance.ListOfPhotos);
 
@@ -151,9 +148,6 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             MainWindowInstance.ChromaComboBox.SelectedIndex = PhotoSetting.ChromaSelectedIndex;
             MainWindowInstance.ScanFormat.SelectedIndex = PhotoSetting.ScanFormatSelectedIndex;
 
-            // установка шрифта ( не законченно ... )
-            TextBlock _tb = new TextBlock { FontFamily = new FontFamily(MainWindowsStyleSetting.Font) };
-            MainWindowInstance.DataContext = _tb;
 
             MainWindowInstance.ScanName.Text = PhotoSetting.LastNameForPhoto;
 
@@ -162,6 +156,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             
         }
 
+        /// <summary>
+        /// Чтение из файла Setting.txt всех настроек ПО.
+        /// </summary>
         public static void ReadSettingFileAndSettingProgramm() // Метод для чтения всех настроек с файла Setting.txt
         {
             string currentDirectory = Environment.CurrentDirectory; // Текущая директория
@@ -224,22 +221,21 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
                 PhotoSetting.SnapshotTime = new TimeSpan(0, 0, Convert.ToInt32(formatedSetting[10]));
 
-                MainWindowsStyleSetting.Font = formatedSetting[11];
 
-                ScanAreaSetting.PositionArea = new Point(Convert.ToInt32(formatedSetting[12].Split(';')[0]), 
-                    Convert.ToInt32(formatedSetting[12].Split(';')[1]));
-
+                ScanAreaSetting.PositionArea = new Point(Convert.ToInt32(formatedSetting[11].Split(';')[0]), 
+                    Convert.ToInt32(formatedSetting[11].Split(';')[1]));
 
 
-                PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[13]); 
 
-                PhotoSetting.Contrast = Convert.ToSingle(formatedSetting[14]);
+                PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[12]); 
 
-                PhotoSetting.ChromaSelectedIndex = Convert.ToInt32(formatedSetting[15]);
+                PhotoSetting.Contrast = Convert.ToSingle(formatedSetting[13]);
 
-                AForgeDocumentDisplay.CurrentDevice = formatedSetting[16];
+                PhotoSetting.ChromaSelectedIndex = Convert.ToInt32(formatedSetting[14]);
 
-                PhotoSetting.ScanFormatSelectedIndex = Convert.ToInt32(formatedSetting[17]);
+                AForgeDocumentDisplay.CurrentDevice = formatedSetting[15];
+
+                PhotoSetting.ScanFormatSelectedIndex = Convert.ToInt32(formatedSetting[16]);
 
             }
             else
@@ -249,7 +245,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         }
 
-
+        /// <summary>
+        /// Запись всех настроек в файл Setting.txt.
+        /// </summary>
         public static void WriteSettingFileNewSettings() // Метод для записи в файл всех настроек
         {
             string currentDirectory = Environment.CurrentDirectory; // Текущая директория
@@ -270,7 +268,6 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 $"ScanAreaWidth={MainWindowInstance.ScanArea.Width}\r\n" +
                 $"Rotate={ScanAreaSetting.RotateFrames}\r\n" +
                 $"Timer={PhotoSetting.SnapshotTime.TotalSeconds}\r\n" +
-                $"Font={MainWindowsStyleSetting.Font}\r\n" +
                 $"PositionScanArea={MainWindowInstance.ScanArea.TranslatePoint(new Point(0, 0), MainWindowInstance.MovingSpaceCanvas)}\r\n" +
                 $"Brightness={MainWindowInstance.ScanBrightness.Value}\r\n" +
                 $"Contrast={MainWindowInstance.ScanContrast.Value}\r\n" +

@@ -6,11 +6,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 {
     static internal class ScanAreaClass
     {
-        public static MainWindow MainWindowInstance;
+        private static MainWindow _mainWindowInstance;
 
-        private static Canvas _canvas;
+        private static Canvas _canvas; // Экземпляр элемента MovingSpaceCanvas
 
-        private static Grid _scanArea;
+        private static Grid _scanArea; // Экземпляр элемента ScanArea
 
         private static Point _oldPos, _newPos; // Данные переменные хранят старые и новые координаты мыши в относительно элемента MovingSpace_Canvas
 
@@ -18,14 +18,19 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
         private static Vector _movePoint; // Здесь хранится позиция мыщи относительно элемента ScanArea
 
-        private static Vector _difference1, _difference2;
+        private static Vector _difference1, _difference2; // Хранит вектор расстояния элемента ScanArea и MovingSpaceCanvas
+                                                          // от верхнего левого угла и нижнего правого угла
 
 
-
-        public static void InitializationScanAreaClass()
+        /// <summary>
+        /// Инициализцая экземпляров MovingSpaceCanvas и ScanArea
+        /// </summary>
+        public static void InitializationScanAreaClass(MainWindow _mainWindow)
         {
-            _canvas = MainWindowInstance.MovingSpaceCanvas;
-            _scanArea = MainWindowInstance.ScanArea;
+            _mainWindowInstance = _mainWindow; 
+
+            _canvas = _mainWindowInstance.MovingSpaceCanvas;
+            _scanArea = _mainWindowInstance.ScanArea;
 
             _canvas.MouseMove += CheckScanAreaSize; // благодаря этому ScanArea не будет выходит за рамки MovingSpaceCanvas
         }
@@ -40,7 +45,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         }
 
 
-        // RemoveAllCanvasMouseEventArgs используется для очищения всех обработчиков событий MouseMove
+        /// <summary>
+        /// RemoveAllCanvasMouseEventArgs используется для очищения всех обработчиков событий MouseMove.
+        /// </summary>
         public static void RemoveAllCanvasMouseEventArgs()
         {
             _canvas.MouseMove -= ScanAreaLeftTopChangeSize;
@@ -57,12 +64,16 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
             _scanArea.ReleaseMouseCapture();
 
-            MainWindowInstance.Cursor = Cursors.Arrow;
+            _mainWindowInstance.Cursor = Cursors.Arrow;
         }
 
-        
 
-        private static void CheckScanAreaSize(object sender, MouseEventArgs e) // Ограничение размера CropSize
+        /// <summary>
+        /// Метод для ограничение размера CropSize.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void CheckScanAreaSize(object sender, MouseEventArgs e) 
         {
             _difference1 = (Vector)_scanArea.TranslatePoint(new Point(0, 0),_canvas);
             _difference2 = new Vector (_canvas.ActualWidth, _canvas.ActualHeight) 
@@ -84,7 +95,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNWSE;
+                _mainWindowInstance.Cursor = Cursors.SizeNWSE;
                 _newPos = Mouse.GetPosition(_canvas);
 
                 var p = e.GetPosition(_canvas) - _movePoint;
@@ -110,7 +121,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNWSE;
+                _mainWindowInstance.Cursor = Cursors.SizeNWSE;
 
                 _newPos = Mouse.GetPosition(_canvas);
 
@@ -137,7 +148,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNWSE;
+                _mainWindowInstance.Cursor = Cursors.SizeNWSE;
                 _newPos = Mouse.GetPosition(_canvas);
 
                 var p = e.GetPosition(_canvas) - (_movePoint + new Vector(_scanArea.Width, _scanArea.Height));
@@ -163,7 +174,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNWSE;
+                _mainWindowInstance.Cursor = Cursors.SizeNWSE;
                 _newPos = Mouse.GetPosition(_canvas);
 
                 var p = e.GetPosition(_canvas) - (_movePoint + new Vector(0, _scanArea.Height));
@@ -191,7 +202,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNS;
+                _mainWindowInstance.Cursor = Cursors.SizeNS;
                 _newPos = Mouse.GetPosition(_canvas);
 
                 var p = e.GetPosition(_canvas) - _movePoint;
@@ -214,7 +225,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeNS;
+                _mainWindowInstance.Cursor = Cursors.SizeNS;
 
                 _newPos = Mouse.GetPosition(_canvas);
 
@@ -236,7 +247,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeWE;
+                _mainWindowInstance.Cursor = Cursors.SizeWE;
 
                 _newPos = Mouse.GetPosition(_canvas);
 
@@ -260,7 +271,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             if (_difference1.X >= 1 & _difference2.X >= 1 & _difference1.Y >= 1 & _difference2.Y >= 1)
             {
-                MainWindowInstance.Cursor = Cursors.SizeWE;
+                _mainWindowInstance.Cursor = Cursors.SizeWE;
 
                 _newPos = Mouse.GetPosition(_canvas);
 
@@ -274,7 +285,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-        // Метод ScanAreaDragMode реализует функцию перемещения ScanArea.
+        /// <summary>
+        /// Данный метод реализует функцию перемещения элемента ScanArea по MovingSpaceCanvas.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public static void ScanAreaCenterLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);

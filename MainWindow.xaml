@@ -31,14 +31,15 @@
                 <GridSplitter Grid.Column="1" Width="5"/>
                 <GridSplitter Grid.Column="3" Width="5"/>
 
-                <Grid Grid.Column="0" x:Name="ScanSettings" Background="#FFF0F0F0" >
-                    <TextBlock HorizontalAlignment="Left" Margin="10,15,0,0" TextWrapping="Wrap" Text="Путь" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="Имя снимка" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,76,0,0" TextWrapping="Wrap" Text="Формат" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,113,0,0" TextWrapping="Wrap" Text="Контраст" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="Яркость" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="6,171,0,0" TextWrapping="Wrap" Text="Цветность" VerticalAlignment="Top" FontFamily="{Binding FontFamily}" Width="58"/>
-                    <TextBox x:Name="ScanPath" Margin="40,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25"/>
+                <!-- Панель инструментов -->
+                <Grid Grid.Column="0" x:Name="ScanSettings" Background="#FFF0F0F0">
+                    <TextBlock HorizontalAlignment="Left" Margin="10,15,0,0" TextWrapping="Wrap" Text="Путь" VerticalAlignment="Top" FontFamily="Cobalt"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,46,0,0" TextWrapping="Wrap" Text="Имя снимка" VerticalAlignment="Top" FontFamily="Cobalt"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" Text="Формат" VerticalAlignment="Top" FontFamily="Cobalt"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,114,0,0" TextWrapping="Wrap" Text="Контраст" VerticalAlignment="Top" FontFamily="Cobalt"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="16,143,0,0" TextWrapping="Wrap" Text="Яркость" VerticalAlignment="Top" FontFamily="Cobalt"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="6,172,0,0" TextWrapping="Wrap" Text="Цветность" VerticalAlignment="Top" FontFamily="Cobalt" Width="58"/>
+                    <TextBox x:Name="ScanPath" Margin="40,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25" FontFamily="Cobalt"/>
                     <Button x:Name="SelectPathButton" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="35" Height="25" Click="SelectPathForPhoto">
                         <Image Source="/Images/FolderPNG.png"/>
                     </Button>
@@ -56,11 +57,11 @@
                         <ComboBoxItem Content="BMP"/>
                         <ComboBoxItem Content="TIF"/>
                     </ComboBox>
-                    <TextBlock HorizontalAlignment="Left" Margin="6,210,0,0" TextWrapping="Wrap" Text="Устройство" VerticalAlignment="Top" FontFamily="{Binding FontFamily}" Width="71"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="6,211,0,0" TextWrapping="Wrap" Text="Устройство" VerticalAlignment="Top" FontFamily="Cobalt" Width="71"/>
                     <ComboBox x:Name="SelectDevice" Margin="77,205,10,0" VerticalAlignment="Top" />
-
                 </Grid>
 
+                <!-- Рабочая область -->
                 <Grid Grid.Column="2" MouseLeftButtonUp="StopChangeSizeAndDragScanArea">
 
                     <!-- Canvas для реализации возможности перемещения объекта Crop -->
@@ -109,7 +110,9 @@
             </Button>
             <Button x:Name="SaveAll__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="130,12,0,12" />
             <Button x:Name="Send__________" Width="50" Height="50" HorizontalAlignment="Left" Margin="190,12,0,12" />
-            <Button x:Name="SaveAsPDF" Width="50" Height="50" HorizontalAlignment="Left" Margin="250,12,0,12" />
+            <Button x:Name="SaveAsPDF" Width="50" Height="50" HorizontalAlignment="Left" Margin="250,12,0,12" Click="SaveAsPDFfile">
+                <Image Source="/Images/PDFIcon.png"/>
+            </Button>
 
             <Button x:Name="TakeShot" Width="100" Height="50" HorizontalAlignment="Left" Margin="325,12,0,12" Click="TakeASnapshot" >
                 <Image Source="/Images/TakePhotoPNG.png" />
@@ -127,14 +130,14 @@
 
             <Grid>
 
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Тема" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,16,0,0" TextWrapping="Wrap" Text="Тема" VerticalAlignment="Top" FontFamily="Cobalt"/>
 
                 <ComboBox x:Name="SelectThemeComboBox" Margin="42,10,10,0" VerticalAlignment="Top" SelectedIndex="0" SelectionChanged="SelectTheme">
                     <ComboBoxItem Content="Светлое"/>
                     <ComboBoxItem Content="Темное"/>
                 </ComboBox>
 
-                <TextBlock HorizontalAlignment="Left" Margin="10,46,0,0" TextWrapping="Wrap" Text="Цвет" VerticalAlignment="Top" FontFamily="{Binding FontFamily}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,47,0,0" TextWrapping="Wrap" Text="Цвет" VerticalAlignment="Top" FontFamily="Cobalt"/>
 
                 <ComboBox x:Name="SelectColorWindowComboBox" Margin="42,41,10,0" VerticalAlignment="Top" SelectedIndex="0" SelectionChanged="SelectTheme">
                     <ComboBoxItem Content="Красный"/>

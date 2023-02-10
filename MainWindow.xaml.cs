@@ -179,5 +179,15 @@ namespace Дипломная_работа___Гимаев_Амир
         {
             PDF.OpenPDFFormatParametrsWindow(ListOfPhotos);
         }
+
+        private void ChangeCropMode(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void OpenPDFEditor(object sender, RoutedEventArgs e)
+        {
+            new Windows.PDFEditor("...").Show();
+        }
     }
 }

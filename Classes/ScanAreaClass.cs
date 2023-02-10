@@ -82,7 +82,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-        // Следующие 16 методов реализуют функцию изменения размера ScanArea
+        // Следующие 16 методов реализуют функцию изменения рамки ScanArea
         public static void ScanAreaLeftTopLBM(object sender, MouseButtonEventArgs eventArgs)
         {
             FindCoordinatesAndOldSize(eventArgs);
@@ -329,5 +329,20 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             //if (XY_left_top_cropRect.Y - 5 < 0) Canvas.SetTop(cropRect, 5);
             catch (System.NullReferenceException ) { }
         }
+
+
+        public static void ChangeCropMode(SelectionChangedEventArgs e)
+        {
+            switch ((e.AddedItems[0] as ComboBoxItem).Content) 
+            {
+                case "Пользовательский":
+                    _mainWindowInstance.ScanArea.Visibility = Visibility.Hidden;
+                    break;
+            }
+
+        }
+
+
+
     }
 }

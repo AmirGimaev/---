@@ -1,8 +1,4 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
-using System;
-using System.Web.UI;
-using System.Web.WebSockets;
+﻿using Spire.Pdf;
 using System.Windows.Controls;
 using Дипломная_работа___Гимаев_Амир.Windows;
 
@@ -29,7 +25,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             => new PDFFormatParameters(_listOfPhotos).Show();
 
         // Документ PDF.
-        private static Document _pdfFile;
+        private static PdfDocument _pdfFile;
 
 
         //private static ;
@@ -40,13 +36,13 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             switch (_formatComboBox.SelectedIndex) 
             {
                 case 0:
-                    _pdfFile = new Document(PageSize.A4);
+                    _pdfFile = new PdfDocument(); _pdfFile.PageSettings.Size = PdfPageSize.A4;
                     break;
                 case 1:
-                    _pdfFile = new Document(PageSize.A3);
+                    _pdfFile = new PdfDocument(); _pdfFile.PageSettings.Size = PdfPageSize.A3;
                     break;
                 case 2:
-                    _pdfFile = new Document(PageSize.A2);
+                    _pdfFile = new PdfDocument(); _pdfFile.PageSettings.Size = PdfPageSize.A2;
                     break;
             }
         }

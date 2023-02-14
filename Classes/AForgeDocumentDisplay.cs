@@ -1,8 +1,6 @@
 ﻿using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using ControlzEx.Standard;
-using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -15,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Дипломная_работа___Гимаев_Амир.Windows;
 using Image = System.Drawing.Image;
 using Point = System.Windows.Point;
@@ -47,36 +46,36 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         {
             _mainWindow = _mw;
 
-                _devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            _devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
-                if (_devices.Count == 0) return ; // Если ПО не нашел не одного устройства, то он метод прекращает выполнение.
+            if (_devices.Count == 0) return; // Если ПО не нашел не одного устройства, то он метод прекращает выполнение.
 
-                foreach (FilterInfo _device in _devices) _mainWindow.SelectDevice.Items.Add(_device.Name); // добавляет имя камеры в элемент ComboBox "SelectDevice"
+            foreach (FilterInfo _device in _devices) _mainWindow.SelectDevice.Items.Add(_device.Name); // добавляет имя камеры в элемент ComboBox "SelectDevice"
 
-                List<FilterInfo> _listfilterInfos = new List<FilterInfo>(); // Создается List для дальнейщего переобразования в массив. 
+            List<FilterInfo> _listfilterInfos = new List<FilterInfo>(); // Создается List для дальнейщего переобразования в массив. 
 
-                foreach (FilterInfo fi in _devices) _listfilterInfos.Add(fi);
+            foreach (FilterInfo fi in _devices) _listfilterInfos.Add(fi);
 
-                FilterInfo[] _filterInfos = _listfilterInfos.ToArray(); // Этот массив создается для поиска нужной камеры по имени
+            FilterInfo[] _filterInfos = _listfilterInfos.ToArray(); // Этот массив создается для поиска нужной камеры по имени
 
-                if (CurrentDevice != string.Empty)
-                {
-                    _videoFrame = new VideoCaptureDevice
-                        (Array.Find(_filterInfos, d => d.Name == CurrentDevice).MonikerString);
+            try
+            {
+                _videoFrame = new VideoCaptureDevice
+                    (Array.Find(_filterInfos, d => d.Name == CurrentDevice).MonikerString);
 
-                    _mainWindow.SelectDevice.SelectedValue = CurrentDevice;
-                }
+                _mainWindow.SelectDevice.SelectedValue = CurrentDevice;
+            }
 
-                else
-                {
-                    _videoFrame = new VideoCaptureDevice(_devices[0].MonikerString);
+            catch
+            {
+                _videoFrame = new VideoCaptureDevice(_devices[0].MonikerString);
 
-                    _mainWindow.SelectDevice.SelectedIndex = 0;
-                }
+                _mainWindow.SelectDevice.SelectedIndex = 0;
+            }
 
-                _videoFrame.NewFrame += new NewFrameEventHandler(NewFrameWithEffect);
+            _videoFrame.NewFrame += new NewFrameEventHandler(NewFrameWithEffect);
 
-                _videoFrame.Start();
+            _videoFrame.Start();
 
         }
 
@@ -116,7 +115,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 if (_hwndSource != null)
                 {
                     IntPtr windowHandle = _hwndSource.Handle;
-                    _hwndSource.AddHook(UsbNotificationHandler); 
+                    _hwndSource.AddHook(UsbNotificationHandler);
                 }
             }
 
@@ -144,7 +143,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         // Вывод видеопотока с камеры на экран.
         private static void NewFrameWithEffect(object sender, NewFrameEventArgs e)
         {
-            BitmapImage _bi; 
+            BitmapImage _bi;
 
             FormatConvertedBitmap _biGray;
 
@@ -169,10 +168,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 _biGray.Source = _bi;
                 _biGray.DestinationFormat = CurrentPixelFormat;
                 _biGray.EndInit();
-                
+
             }
             _biGray.Freeze();
-            Application.Current.Dispatcher.Invoke(new ThreadStart(delegate { _mainWindow.FrameArea.Source = _biGray; }));
+            try { Application.Current.Dispatcher.Invoke(new ThreadStart(delegate { _mainWindow.FrameArea.Source = _biGray; })); }
+            catch (Exception) { }
         }
 
 
@@ -184,7 +184,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         public static void SelectDevice(in int index)
         {
             _videoFrame.Stop();
-            _videoFrame = new VideoCaptureDevice(_devices[index].MonikerString); 
+            _videoFrame = new VideoCaptureDevice(_devices[index].MonikerString);
             _videoFrame.Start();
         }
 
@@ -193,15 +193,19 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// <summary>
         /// Останавливает работу AForge во время закрытия программы.
         /// </summary>        
-        public static void StopFrame() 
+        public static void StopFrame()
         {
             if (_videoFrame != null & _videoFrame.IsRunning)
             {
-                _videoFrame.SignalToStop();
                 _videoFrame.NewFrame -= NewFrameWithEffect;
+                Dispatcher.CurrentDispatcher.InvokeShutdown();
+                _videoFrame.SignalToStop();
+                Thread.Sleep(1000);
                 _videoFrame.WaitForStop();
+                Thread.Sleep(1000);
+                _videoFrame.Stop();
                 _videoFrame = null;
-            }    
+            }
         }
 
 
@@ -238,10 +242,10 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
             if (!SavePhoto(_newImage)) return;
 
-            AddPhotoToListOfPhotos(new string[] { _currentPathFile });
+            ListOfPhotosClass.AddPhotoToListOfPhotos(_mainWindow.ListOfPhotos, new string[] { _currentPathFile });
         }
 
-        
+
         private static bool SavePhoto(Bitmap _image)
         {
             try
@@ -251,7 +255,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 if (_mainWindow.ScanPath.Text != string.Empty)
                     if (_mainWindow.ScanName.Text != string.Empty)
                     {
-                        _image.Save($@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.{ScanFormat}", ScanFormat); 
+                        _image.Save($@"{_mainWindow.ScanPath.Text}\{_mainWindow.ScanName.Text}_{_photoNumber}.{ScanFormat}", ScanFormat);
                         _photoNumber++;
                         return true;
                     }
@@ -267,48 +271,8 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             }
         }
 
-        // Добавляет снимки в ListOfPhotos
-        private static void AddPhotoToListOfPhotos(string[] _fullPathPhotos)
-        {
-            foreach (string _fullPathPhoto in _fullPathPhotos)
-            {
-                // Если файл не является изображением, то произойдет выход из метода
-                if (!_fullPathPhoto.EndsWith(".Png") & !_fullPathPhoto.EndsWith(".Jpeg") 
-                    & !_fullPathPhoto.EndsWith(".Tiff") & !_fullPathPhoto.EndsWith(".Bmp")) return; 
-
-                // В переменную _bi добавим ранне созданый снимок (для того, чтобы добавить этот снимок в ListOfPhotos)
-                var _bi = new BitmapImage();
-                _bi.BeginInit();
-                _bi.UriSource = new Uri(_fullPathPhoto);
-                _bi.EndInit();
-
-                // В _sp будет храниться элемент Image (со снимком) и TextBlok (с кратким именем снимка)
-                StackPanel _sp = new StackPanel() { Margin = new Thickness(5)};
-                _sp.MaxHeight = 120;
-                _sp.Children.Add(new System.Windows.Controls.Image() { Stretch = Stretch.Uniform, MaxHeight = 100, MaxWidth = 100 });
-                _sp.Children.Add(new TextBlock());
-
-                (_sp.Children[0] as System.Windows.Controls.Image).Source = _bi;
-                (_sp.Children[1] as TextBlock).HorizontalAlignment = HorizontalAlignment.Center;
-                (_sp.Children[1] as TextBlock).Text = _fullPathPhoto.Remove(0,_fullPathPhoto.LastIndexOf('\\') + 1);
-
-                ListBoxItem lbi = new ListBoxItem() { Content = _sp };
-
-                _mainWindow.ListOfPhotos.Items.Add(lbi);
-            }
-        }
 
 
-        /// <summary>
-        /// Добавляет снимки, перетаскиваемые из рабочего стола в ListOfPhotos.
-        /// </summary>
-        /// <param name="e">Данный параметр передает данные об переметаскиваемых файлах.</param>
-        public static void DropPhotosToListOfPhotos(DragEventArgs e)
-        {
-            string[] _files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-
-            AddPhotoToListOfPhotos(_files);
-        }
 
         /// <summary>
         /// Выбор цветности снимка.
@@ -316,7 +280,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// <param name="e">Данный параметр передает данные об выбранном цветности</param>
         public static void SelectChroma(SelectionChangedEventArgs e)
         {
-            switch((e.AddedItems[0] as ComboBoxItem).Content as string)
+            switch ((e.AddedItems[0] as ComboBoxItem).Content as string)
             {
                 case "Цветной":
                     CurrentPixelFormat = PixelFormats.Default;
@@ -338,7 +302,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// <param name="e">Данный параметр передает данные об выбранном формате изображений</param>
         public static void SelectFormat(SelectionChangedEventArgs e)
         {
-            switch ((e.AddedItems[0] as ComboBoxItem).Content as string) 
+            switch ((e.AddedItems[0] as ComboBoxItem).Content as string)
             {
                 case "JPG":
                     ScanFormat = ImageFormat.Jpeg;

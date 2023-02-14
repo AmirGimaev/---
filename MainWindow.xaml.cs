@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -48,7 +49,7 @@ namespace Дипломная_работа___Гимаев_Амир
 
 
 
-     
+
 
         private void ScanArea_top_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -93,7 +94,7 @@ namespace Дипломная_работа___Гимаев_Амир
 
         private void ScanArea_center_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ScanAreaClass.ScanAreaCenterLBM(sender,e);
+            ScanAreaClass.ScanAreaCenterLBM(sender, e);
         }
 
 
@@ -108,23 +109,22 @@ namespace Дипломная_работа___Гимаев_Амир
         }
         private void StopChangeSizeAndDragScanArea(object sender, MouseEventArgs e)
         {
-             ScanAreaClass.RemoveAllCanvasMouseEventArgs();
+            ScanAreaClass.RemoveAllCanvasMouseEventArgs();
         }
 
-        
+
 
         private void SelectTheme(object sender, SelectionChangedEventArgs e)
         {
             ProgrammSetting.MainWindowsStyleSetting.ChangeTheme();
         }
 
-        private void OpenSettingPage(object sender, RoutedEventArgs e) 
+        private void OpenSettingPage(object sender, RoutedEventArgs e)
             => SettingPage.IsOpen = true;
 
         private void MetroWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ProgrammSetting.WriteSettingFileNewSettings();
-
             AForgeDocumentDisplay.StopFrame();
         }
 
@@ -151,7 +151,7 @@ namespace Дипломная_работа___Гимаев_Амир
 
         private void SelectPathForPhoto(object sender, RoutedEventArgs e)
         {
-            PDF.SelectFolderPath(ScanPath);
+            PDFClass.SelectFolderPath(ScanPath);
         }
 
         private void TakeASnapshot(object sender, RoutedEventArgs e)
@@ -162,7 +162,7 @@ namespace Дипломная_работа___Гимаев_Амир
 
         private void AddPicturesToListOfPhotos(object sender, DragEventArgs e)
         {
-            AForgeDocumentDisplay.DropPhotosToListOfPhotos(e);
+            ListOfPhotosClass.DropPhotosToListOfPhotos(ref ListOfPhotos, e);
         }
 
         private void ChangeImageFormat(object sender, SelectionChangedEventArgs e)
@@ -177,17 +177,29 @@ namespace Дипломная_работа___Гимаев_Амир
 
         private void SaveAsPDFfile(object sender, RoutedEventArgs e)
         {
-            PDF.OpenPDFFormatParametrsWindow(ListOfPhotos);
-        }
-
-        private void ChangeCropMode(object sender, SelectionChangedEventArgs e)
-        {
-
+            PDFClass.OpenPDFFormatParametrsWindow(ListOfPhotos, ScanPath.Text + '\\', this);
         }
 
         private void OpenPDFEditor(object sender, RoutedEventArgs e)
         {
-            new Windows.PDFEditor("...").Show();
+            PDFClass.OpenPDFEditor();
+        }
+
+
+        private void RemoveSelectedItems(object sender, RoutedEventArgs e)
+        {
+            ListOfPhotosClass.DeleteSelectedImages(ListOfPhotos);
+        }
+
+        private void TakeSnapshotWithTimer(object sender, RoutedEventArgs e)
+        {
+            Thread.Sleep(Convert.ToInt32(ShotTimerTextBox.Value + "000"));
+            AForgeDocumentDisplay.TakeASnapshotOfTheDocument();
+        }
+
+        private void OpenImagesFromCatalog(object sender, RoutedEventArgs e)
+        {
+            ListOfPhotosClass.OpenImagesFromCatalog(ref ListOfPhotos, ref ScanPath);
         }
     }
 }

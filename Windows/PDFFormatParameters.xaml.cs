@@ -1,37 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Дипломная_работа___Гимаев_Амир.Classes;
 
 namespace Дипломная_работа___Гимаев_Амир.Windows
 {
-    public partial class PDFFormatParameters : Window
+    public partial class PDFFormatParameters : MetroWindow
     {
-        public PDFFormatParameters(ListBox _listOfPhotos)
+
+        /// <summary>
+        /// Инициализация данного окна.
+        /// </summary>
+        /// <param name="_listOfPhotos">Экземпляр ListBox с коллекциями снимков</param>
+        /// <param name="mode">Режим работы окна</param>
+        public PDFFormatParameters(ListBox _listOfPhotos, string pathPDF = null)
         {
             InitializeComponent();
-
+            PathPDFFile.Text = pathPDF;
             ScanSlider.Maximum = _listOfPhotos.Items.Count;
         }
 
         private void ChangeFormat(object sender, EventArgs e)
         {
-            PDF.ChangeFormatPDF(sender as ComboBox);
+            PDFClass.ChangeFormatPDF(sender as ComboBox);
         }
 
-        private void SelectScan(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void SelectPage(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            
+            PDFClass.ChangePage(this);
+        }
+
+        private void SelectSavePathPDF(object sender, RoutedEventArgs e)
+        {
+            PDFClass.SelectFolderPath(PathPDFFile);
+        }
+
+        private void ParamChanged(object sender, TextChangedEventArgs e)
+        {
+            PDFClass.ChangePageParam(this);
+        }
+        private void ParamChanged(object sender, RoutedEventArgs e)
+        {
+            PDFClass.ChangePageParam(this);
+        }
+
+        private void SavePDFInFolder(object sender, RoutedEventArgs e)
+        {
+            PDFClass.SavePDFFile(PathPDFFile.Text, NamePDFFileTextBox.Text);
+        }
+
+        private void WindowIsLoaded(object sender, RoutedEventArgs e)
+        {
+            PDFClass.DisplayPDFPage(0);
+        }
+
+        private void SavePDFInDB(object sender, RoutedEventArgs e)
+        {
+            PDFClass.SavePDFFile(Environment.CurrentDirectory, "pdfDB");
+            PDFClass.OpenAddDigitizedDocumentWindow();
+            Close();
         }
     }
 }

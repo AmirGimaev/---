@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Хранилище DigitalDocumentsModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Digitized">
+          <Key>
+            <PropertyRef Name="IdCase" />
+          </Key>
+          <Property Name="IdCase" Type="int" Nullable="false" />
+          <Property Name="DateOfDigitization" Type="date" Nullable="false" />
+          <Property Name="DigitizedFile" Type="varbinary(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="IdCase" />
+          </Key>
+          <Property Name="IdCase" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="IdFoundation" Type="int" Nullable="false" />
+          <Property Name="NumberCase" Type="int" Nullable="false" />
+          <Property Name="PageCount" Type="int" Nullable="false" />
+          <Property Name="FromTheBeginningOf" Type="date" />
+          <Property Name="To" Type="date" />
+        </EntityType>
+        <EntityType Name="Foundations">
+          <Key>
+            <PropertyRef Name="IdFoundation" />
+          </Key>
+          <Property Name="IdFoundation" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IdTypeOfFoundation" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="TypeOfFoundation">
+          <Key>
+            <PropertyRef Name="IdTypeOfFoundation" />
+          </Key>
+          <Property Name="IdTypeOfFoundation" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Digitized_Documents">
+          <End Role="Documents" Type="Self.Documents" Multiplicity="1" />
+          <End Role="Digitized" Type="Self.Digitized" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="IdCase" />
+            </Principal>
+            <Dependent Role="Digitized">
+              <PropertyRef Name="IdCase" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documents_Foundations">
+          <End Role="Foundations" Type="Self.Foundations" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Foundations">
+              <PropertyRef Name="IdFoundation" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="IdFoundation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Foundations_TypeOfFoundation">
+          <End Role="TypeOfFoundation" Type="Self.TypeOfFoundation" Multiplicity="1" />
+          <End Role="Foundations" Type="Self.Foundations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfFoundation">
+              <PropertyRef Name="IdTypeOfFoundation" />
+            </Principal>
+            <Dependent Role="Foundations">
+              <PropertyRef Name="IdTypeOfFoundation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище DigitalDocumentsModelContainer">
+          <EntitySet Name="Digitized" EntityType="Self.Digitized" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Foundations" EntityType="Self.Foundations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TypeOfFoundation" EntityType="Self.TypeOfFoundation" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Digitized_Documents" Association="Self.FK_Digitized_Documents">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="Digitized" EntitySet="Digitized" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documents_Foundations" Association="Self.FK_Documents_Foundations">
+            <End Role="Foundations" EntitySet="Foundations" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Foundations_TypeOfFoundation" Association="Self.FK_Foundations_TypeOfFoundation">
+            <End Role="TypeOfFoundation" EntitySet="TypeOfFoundation" />
+            <End Role="Foundations" EntitySet="Foundations" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DigitalDocumentsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Digitized">
+          <Key>
+            <PropertyRef Name="IdCase" />
+          </Key>
+          <Property Name="IdCase" Type="Int32" Nullable="false" />
+          <Property Name="DateOfDigitization" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DigitizedFile" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK_Documents_Digitized" FromRole="Digitized" ToRole="Documents" />
+          <NavigationProperty Name="Documents1" Relationship="DigitalDocumentsModel.FK_Digitized_Documents" FromRole="Digitized" ToRole="Documents" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="IdCase" />
+          </Key>
+          <Property Name="IdCase" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdFoundation" Type="Int32" Nullable="false" />
+          <Property Name="NumberCase" Type="Int32" Nullable="false" />
+          <Property Name="PageCount" Type="Int32" Nullable="false" />
+          <Property Name="FromTheBeginningOf" Type="DateTime" Precision="0" />
+          <Property Name="To" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Digitized" Relationship="Self.FK_Documents_Digitized" FromRole="Documents" ToRole="Digitized" />
+          <NavigationProperty Name="Foundations" Relationship="Self.FK_Documents_Foundations" FromRole="Documents" ToRole="Foundations" />
+          <NavigationProperty Name="Digitized1" Relationship="DigitalDocumentsModel.FK_Digitized_Documents" FromRole="Documents" ToRole="Digitized" />
+        </EntityType>
+        <EntityType Name="Foundations">
+          <Key>
+            <PropertyRef Name="IdFoundation" />
+          </Key>
+          <Property Name="IdFoundation" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdTypeOfFoundation" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK_Documents_Foundations" FromRole="Foundations" ToRole="Documents" />
+          <NavigationProperty Name="TypeOfFoundation" Relationship="Self.FK_Foundations_TypeOfFoundation" FromRole="Foundations" ToRole="TypeOfFoundation" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TypeOfFoundation">
+          <Key>
+            <PropertyRef Name="IdTypeOfFoundation" />
+          </Key>
+          <Property Name="IdTypeOfFoundation" Type="Byte" Nullable="false" />
+          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Foundations" Relationship="Self.FK_Foundations_TypeOfFoundation" FromRole="TypeOfFoundation" ToRole="Foundations" />
+        </EntityType>
+        <Association Name="FK_Documents_Digitized">
+          <End Role="Digitized" Type="Self.Digitized" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Digitized">
+              <PropertyRef Name="IdCase" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="IdCase" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documents_Foundations">
+          <End Role="Foundations" Type="Self.Foundations" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Foundations">
+              <PropertyRef Name="IdFoundation" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="IdFoundation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Foundations_TypeOfFoundation">
+          <End Role="TypeOfFoundation" Type="Self.TypeOfFoundation" Multiplicity="1" />
+          <End Role="Foundations" Type="Self.Foundations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfFoundation">
+              <PropertyRef Name="IdTypeOfFoundation" />
+            </Principal>
+            <Dependent Role="Foundations">
+              <PropertyRef Name="IdTypeOfFoundation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DigitalDocumentsDataBase" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Digitized" EntityType="Self.Digitized" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" />
+          <EntitySet Name="Foundations" EntityType="Self.Foundations" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="TypeOfFoundation" EntityType="Self.TypeOfFoundation" />
+          <AssociationSet Name="FK_Documents_Digitized" Association="Self.FK_Documents_Digitized">
+            <End Role="Digitized" EntitySet="Digitized" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documents_Foundations" Association="Self.FK_Documents_Foundations">
+            <End Role="Foundations" EntitySet="Foundations" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Foundations_TypeOfFoundation" Association="Self.FK_Foundations_TypeOfFoundation">
+            <End Role="TypeOfFoundation" EntitySet="TypeOfFoundation" />
+            <End Role="Foundations" EntitySet="Foundations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Digitized_Documents" Association="DigitalDocumentsModel.FK_Digitized_Documents">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="Digitized" EntitySet="Digitized" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_Digitized_Documents">
+          <End Type="DigitalDocumentsModel.Documents" Role="Documents" Multiplicity="1" />
+          <End Type="DigitalDocumentsModel.Digitized" Role="Digitized" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="IdCase" />
+            </Principal>
+            <Dependent Role="Digitized">
+              <PropertyRef Name="IdCase" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище DigitalDocumentsModelContainer" CdmEntityContainer="DigitalDocumentsDataBase">
+          <EntitySetMapping Name="Digitized">
+            <EntityTypeMapping TypeName="DigitalDocumentsModel.Digitized">
+              <MappingFragment StoreEntitySet="Digitized">
+                <ScalarProperty Name="IdCase" ColumnName="IdCase" />
+                <ScalarProperty Name="DateOfDigitization" ColumnName="DateOfDigitization" />
+                <ScalarProperty Name="DigitizedFile" ColumnName="DigitizedFile" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="DigitalDocumentsModel.Documents">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="IdCase" ColumnName="IdCase" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdFoundation" ColumnName="IdFoundation" />
+                <ScalarProperty Name="NumberCase" ColumnName="NumberCase" />
+                <ScalarProperty Name="PageCount" ColumnName="PageCount" />
+                <ScalarProperty Name="FromTheBeginningOf" ColumnName="FromTheBeginningOf" />
+                <ScalarProperty Name="To" ColumnName="To" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Foundations">
+            <EntityTypeMapping TypeName="DigitalDocumentsModel.Foundations">
+              <MappingFragment StoreEntitySet="Foundations">
+                <ScalarProperty Name="IdFoundation" ColumnName="IdFoundation" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdTypeOfFoundation" ColumnName="IdTypeOfFoundation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="DigitalDocumentsModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeOfFoundation">
+            <EntityTypeMapping TypeName="DigitalDocumentsModel.TypeOfFoundation">
+              <MappingFragment StoreEntitySet="TypeOfFoundation">
+                <ScalarProperty Name="IdTypeOfFoundation" ColumnName="IdTypeOfFoundation" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

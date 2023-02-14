@@ -1,31 +1,31 @@
-﻿using Spire.Pdf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Дипломная_работа___Гимаев_Амир.Classes;
 
 namespace Дипломная_работа___Гимаев_Амир.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для PDFEditor.xaml
-    /// </summary>
     public partial class PDFEditor : Window
     {
-        private PdfDocument pdfDocument;
+        private Spire.Pdf.PdfDocument pdf;
 
-        public PDFEditor(string _pdfPath)
+        public PDFEditor()
         {
             InitializeComponent();
-            pdfDocument = new PdfDocument(_pdfPath);
+        }
+
+        // Удаляет выбранные страницы
+        private void DeleteSelectedPages(object sender, RoutedEventArgs e)
+        {
+            PDFClass.DeleteSelectionPagesFromPDF(ref PDFViewer, PathPDFTextBox.Text, pdf);
+            PDFProperty.Text = PDFClass.GetPDFProperty(pdf, PathPDFTextBox.Text);
+        }
+
+        private void OpenPDFFile(object sender, RoutedEventArgs e)
+        {
+            PDFClass.SelectFile(PathPDFTextBox);
+
+            PDFClass.OpenPDF(ref PDFViewer, PathPDFTextBox.Text, out pdf);
+
+            PDFProperty.Text = PDFClass.GetPDFProperty(pdf, PathPDFTextBox.Text);
         }
     }
 }

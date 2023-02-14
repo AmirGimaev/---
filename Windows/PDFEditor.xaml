@@ -7,9 +7,20 @@
         xmlns:Wpf="clr-namespace:Spire.PdfViewer.Wpf;assembly=Spire.PdfViewer.Wpf"
         x:Class="Дипломная_работа___Гимаев_Амир.Windows.PDFEditor"
         mc:Ignorable="d"
-        Title="PDFEditor" Height="450" Width="800">
+        Title="Редактор документа" MinHeight="450" MinWidth="685"
+        Height="450" Width="685" Icon="/Images/DocIco.ico" >
 
     <Grid>
-        <Wpf:PdfViewer Margin="0,0,300,0"/>
+        <ListBox x:Name="PDFViewer" Margin="0,0,225,0" SelectionMode="Multiple" Background="#FFECECEC"/>
+        <Button x:Name="DeleteSelectedPagesButton" Content="Удалить выбранные страницы" 
+                HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" 
+                ToolTip="Удаление выбранных страниц с текущего документов (удаление безвозвратно)."
+                Width="205" Click="DeleteSelectedPages"/>
+        <TextBox x:Name="PathPDFTextBox" HorizontalAlignment="Right" Margin="0,10,45,0" TextWrapping="Wrap" MaxLines="1" VerticalAlignment="Top" Width="170" Height="33"/>
+        <Button HorizontalAlignment="Right" Margin="0,11,10,0" VerticalAlignment="Top" Width="30"
+                ToolTip="Открыть PDF" Click="OpenPDFFile">
+            <Image Source="/Images/FolderPNG.png"/>
+        </Button>
+        <TextBlock x:Name="PDFProperty" Margin="0,48,10,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="205"/>
     </Grid>
 </Window>

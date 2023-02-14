@@ -27,7 +27,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// </summary>
         public static void InitializationScanAreaClass(MainWindow _mainWindow)
         {
-            _mainWindowInstance = _mainWindow; 
+            _mainWindowInstance = _mainWindow;
 
             _canvas = _mainWindowInstance.MovingSpaceCanvas;
             _scanArea = _mainWindowInstance.ScanArea;
@@ -73,11 +73,11 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void CheckScanAreaSize(object sender, MouseEventArgs e) 
+        private static void CheckScanAreaSize(object sender, MouseEventArgs e)
         {
-            _difference1 = (Vector)_scanArea.TranslatePoint(new Point(0, 0),_canvas);
-            _difference2 = new Vector (_canvas.ActualWidth, _canvas.ActualHeight) 
-                - (Vector)_scanArea.TranslatePoint(new Point(_scanArea.ActualWidth, _scanArea.ActualHeight), _canvas) ;
+            _difference1 = (Vector)_scanArea.TranslatePoint(new Point(0, 0), _canvas);
+            _difference2 = new Vector(_canvas.ActualWidth, _canvas.ActualHeight)
+                - (Vector)_scanArea.TranslatePoint(new Point(_scanArea.ActualWidth, _scanArea.ActualHeight), _canvas);
         }
 
 
@@ -302,13 +302,13 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         }
         private static void ScanAreaDragMode(object sender, MouseEventArgs e)
         {
-             if (_difference1.X < 0) { Canvas.SetLeft(_scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
-             if (_difference2.X < 0) { Canvas.SetLeft(_scanArea, _canvas.ActualWidth - _scanArea.ActualWidth); RemoveAllCanvasMouseEventArgs(); return; }
-             if (_difference1.Y < 0) { Canvas.SetTop(_scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
-             if (_difference2.Y < 0) { Canvas.SetTop(_scanArea, _canvas.ActualHeight - _scanArea.ActualHeight); RemoveAllCanvasMouseEventArgs(); return; }
+            if (_difference1.X < 0) { Canvas.SetLeft(_scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
+            if (_difference2.X < 0) { Canvas.SetLeft(_scanArea, _canvas.ActualWidth - _scanArea.ActualWidth); RemoveAllCanvasMouseEventArgs(); return; }
+            if (_difference1.Y < 0) { Canvas.SetTop(_scanArea, 0); RemoveAllCanvasMouseEventArgs(); return; }
+            if (_difference2.Y < 0) { Canvas.SetTop(_scanArea, _canvas.ActualHeight - _scanArea.ActualHeight); RemoveAllCanvasMouseEventArgs(); return; }
 
-             Canvas.SetLeft(_scanArea, e.GetPosition(_canvas).X - _oldPos.X);
-             Canvas.SetTop(_scanArea, e.GetPosition(_canvas).Y - _oldPos.Y);
+            Canvas.SetLeft(_scanArea, e.GetPosition(_canvas).X - _oldPos.X);
+            Canvas.SetTop(_scanArea, e.GetPosition(_canvas).Y - _oldPos.Y);
         }
 
 
@@ -327,13 +327,13 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
             }
             //if (XY_left_top_cropRect.X - 5 < 0) Canvas.SetLeft(cropRect, 5);
             //if (XY_left_top_cropRect.Y - 5 < 0) Canvas.SetTop(cropRect, 5);
-            catch (System.NullReferenceException ) { }
+            catch (System.NullReferenceException) { }
         }
 
 
         public static void ChangeCropMode(SelectionChangedEventArgs e)
         {
-            switch ((e.AddedItems[0] as ComboBoxItem).Content) 
+            switch ((e.AddedItems[0] as ComboBoxItem).Content)
             {
                 case "Пользовательский":
                     _mainWindowInstance.ScanArea.Visibility = Visibility.Hidden;

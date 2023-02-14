@@ -56,6 +56,15 @@
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -73,6 +82,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
@@ -94,10 +105,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ArchiveDataBase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArchiveDataBase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveDataBase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveDataBase.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArchiveDataBase.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Classes\AForgeDocumentDisplay.cs" />
-    <Compile Include="Classes\FloatingArea.cs" />
     <Compile Include="Classes\ListOfPhotosClass.cs" />
     <Compile Include="Classes\ScanAreaClass.cs" />
+    <Compile Include="Digitized.cs">
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Documents.cs">
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Foundations.cs">
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagrams.cs">
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TypeOfFoundation.cs">
+      <DependentUpon>ArchiveDataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddDigitizedDocument.xaml.cs">
+      <DependentUpon>AddDigitizedDocument.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LoadingScreen.xaml.cs">
       <DependentUpon>LoadingScreen.xaml</DependentUpon>
     </Compile>
@@ -115,12 +158,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\PDF.cs" />
+    <Compile Include="Classes\PDFClass.cs" />
     <Compile Include="Classes\ProgrammSetting.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\AddDigitizedDocument.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\LoadingScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,6 +199,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="ArchiveDataBase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ArchiveDataBase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="ArchiveDataBase.edmx.diagram">
+      <DependentUpon>ArchiveDataBase.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -183,6 +237,22 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\PDFEditorPNG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ArchiveDataBase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ArchiveDataBase.Context.cs</LastGenOutput>
+      <DependentUpon>ArchiveDataBase.edmx</DependentUpon>
+    </Content>
+    <Content Include="ArchiveDataBase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ArchiveDataBase.edmx</DependentUpon>
+      <LastGenOutput>ArchiveDataBase.cs</LastGenOutput>
+    </Content>
+    <Resource Include="Images\DataBase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

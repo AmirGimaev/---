@@ -2,8 +2,8 @@
 using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Дипломная_работа___Гимаев_Амир.Classes
 {
@@ -13,7 +13,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         private static MainWindow MainWindowInstance; // Здесь храниться экземпляр главного окна
 
 
-        static public class MainWindowsStyleSetting 
+        static public class MainWindowsStyleSetting
         {
             internal static string StyleTitleShade, StyleTitleColor; // Стиль окна
 
@@ -23,7 +23,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
 
-            private static string[,] Colors = 
+            private static string[,] Colors =
             {
                 {"Красный", "Red"},
                 {"Зелёный", "Green"},
@@ -49,36 +49,36 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 {"Темно-серо-коричневый", "Taupe"}
             };
 
-            
+
             /// <summary>
             /// Установка новой темы для окна.
             /// </summary>
             public static void ChangeTheme()
             {
-                try { if (MainWindowInstance == null) return; } catch (Exception) {  }
+                try { if (MainWindowInstance == null) return; } catch (Exception) { }
 
-                    if (MainWindowInstance.SelectThemeComboBox.SelectedIndex == 0)
-                    {
-                        StyleTitleShade = ThemeManager.BaseColorLightConst;
-                        MainWindowInstance.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFAFAFA"));
-                        MainWindowInstance.ScanSettings.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF0F0F0"));
-                    }
-                    else
-                    {
-                        StyleTitleShade = ThemeManager.BaseColorDarkConst;
-                        MainWindowInstance.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF808080"));
-                        MainWindowInstance.ScanSettings.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF6F6F6F"));
-                    }
-
-
-                    for (byte i = 0; i < Colors.GetLength(0); i++)
-                        if (Colors[i, 0] == (MainWindowInstance.SelectColorWindowComboBox.SelectedItem as ComboBoxItem).Content.ToString())
-                        { StyleTitleColor = Colors[i, 1]; break; }
+                if (MainWindowInstance.SelectThemeComboBox.SelectedIndex == 0)
+                {
+                    StyleTitleShade = ThemeManager.BaseColorLightConst;
+                    MainWindowInstance.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFAFAFA"));
+                    MainWindowInstance.ScanSettings.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF0F0F0"));
+                }
+                else
+                {
+                    StyleTitleShade = ThemeManager.BaseColorDarkConst;
+                    MainWindowInstance.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF808080"));
+                    MainWindowInstance.ScanSettings.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF6F6F6F"));
+                }
 
 
-                    ThemeManager.Current.ChangeTheme(MainWindowInstance, StyleTitleShade + "." + StyleTitleColor);
+                for (byte i = 0; i < Colors.GetLength(0); i++)
+                    if (Colors[i, 0] == (MainWindowInstance.SelectColorWindowComboBox.SelectedItem as ComboBoxItem).Content.ToString())
+                    { StyleTitleColor = Colors[i, 1]; break; }
 
-                WriteSettingFileNewSettings(); 
+
+                ThemeManager.Current.ChangeTheme(MainWindowInstance, StyleTitleShade + "." + StyleTitleColor);
+
+                WriteSettingFileNewSettings();
 
             }
         }
@@ -88,7 +88,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
         /// <summary>
         /// Данный класс хранит свойства для ScanArea
         /// </summary>
-        static public class ScanAreaSetting 
+        static public class ScanAreaSetting
         {
             public static int RotateFrames { get; internal set; } // Оринтация кадров
 
@@ -100,9 +100,9 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
 
         /// <summary>
-        /// Данный класс хранит свойства для снимков
+        /// Данный класс хранит свойства снимков
         /// </summary>
-        static public class PhotoSetting 
+        static public class PhotoSetting
         {
             public static string LastPathForPhotos, LastNameForPhoto, LastNameForPDF; // Последнее использованные имена
 
@@ -153,7 +153,7 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
 
             MainWindowInstance.ScanPath.Text = PhotoSetting.LastPathForPhotos;
 
-            
+
         }
 
         /// <summary>
@@ -222,12 +222,12 @@ namespace Дипломная_работа___Гимаев_Амир.Classes
                 PhotoSetting.SnapshotTime = new TimeSpan(0, 0, Convert.ToInt32(formatedSetting[10]));
 
 
-                ScanAreaSetting.PositionArea = new Point(Convert.ToInt32(formatedSetting[11].Split(';')[0]), 
+                ScanAreaSetting.PositionArea = new Point(Convert.ToInt32(formatedSetting[11].Split(';')[0]),
                     Convert.ToInt32(formatedSetting[11].Split(';')[1]));
 
 
 
-                PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[12]); 
+                PhotoSetting.Brightness = Convert.ToSingle(formatedSetting[12]);
 
                 PhotoSetting.Contrast = Convert.ToSingle(formatedSetting[13]);
 
